@@ -1,0 +1,17 @@
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\bin\Debug\net8.0\AgroLink.Repository.deps.json
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\bin\Debug\net8.0\AgroLink.Repository.runtimeconfig.json
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\bin\Debug\net8.0\AgroLink.Repository.dll
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\bin\Debug\net8.0\AgroLink.Repository.pdb
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\bin\Debug\net8.0\AgroLink.Core.dll
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\bin\Debug\net8.0\AgroLink.Core.pdb
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\obj\Debug\net8.0\AgroLink.Repository.csproj.AssemblyReference.cache
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\obj\Debug\net8.0\AgroLink.Repository.GeneratedMSBuildEditorConfig.editorconfig
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\obj\Debug\net8.0\AgroLink.Repository.AssemblyInfoInputs.cache
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\obj\Debug\net8.0\AgroLink.Repository.AssemblyInfo.cs
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\obj\Debug\net8.0\AgroLink.Repository.csproj.CoreCompileInputs.cache
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\obj\Debug\net8.0\AgroLink.EEAA7605.Up2Date
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\obj\Debug\net8.0\AgroLink.Repository.dll
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\obj\Debug\net8.0\refint\AgroLink.Repository.dll
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\obj\Debug\net8.0\AgroLink.Repository.pdb
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\obj\Debug\net8.0\AgroLink.Repository.genruntimeconfig.cache
+D:\BIS Projects\AgroLink.Backend\AgroLink.Repository\obj\Debug\net8.0\ref\AgroLink.Repository.dll

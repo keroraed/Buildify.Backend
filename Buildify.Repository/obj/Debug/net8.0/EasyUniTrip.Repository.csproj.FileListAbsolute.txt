@@ -1,0 +1,17 @@
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\bin\Debug\net8.0\EasyUniTrip.Repository.deps.json
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\bin\Debug\net8.0\EasyUniTrip.Repository.runtimeconfig.json
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\bin\Debug\net8.0\EasyUniTrip.Repository.dll
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\bin\Debug\net8.0\EasyUniTrip.Repository.pdb
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\bin\Debug\net8.0\EasyUniTrip.Core.dll
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\bin\Debug\net8.0\EasyUniTrip.Core.pdb
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\obj\Debug\net8.0\EasyUniTrip.Repository.csproj.AssemblyReference.cache
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\obj\Debug\net8.0\EasyUniTrip.Repository.GeneratedMSBuildEditorConfig.editorconfig
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\obj\Debug\net8.0\EasyUniTrip.Repository.AssemblyInfoInputs.cache
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\obj\Debug\net8.0\EasyUniTrip.Repository.AssemblyInfo.cs
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\obj\Debug\net8.0\EasyUniTrip.Repository.csproj.CoreCompileInputs.cache
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\obj\Debug\net8.0\EasyUniT.1B1F5BFF.Up2Date
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\obj\Debug\net8.0\EasyUniTrip.Repository.dll
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\obj\Debug\net8.0\refint\EasyUniTrip.Repository.dll
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\obj\Debug\net8.0\EasyUniTrip.Repository.pdb
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\obj\Debug\net8.0\EasyUniTrip.Repository.genruntimeconfig.cache
+D:\EasyUniTrip.Backend\EasyUniTrip.Repository\obj\Debug\net8.0\ref\EasyUniTrip.Repository.dll

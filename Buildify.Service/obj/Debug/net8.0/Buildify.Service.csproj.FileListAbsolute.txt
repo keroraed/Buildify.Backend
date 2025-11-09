@@ -1,0 +1,15 @@
+D:\BIS Projects\Buildify.Backend\Buildify.Service\bin\Debug\net8.0\Buildify.Service.deps.json
+D:\BIS Projects\Buildify.Backend\Buildify.Service\bin\Debug\net8.0\Buildify.Service.dll
+D:\BIS Projects\Buildify.Backend\Buildify.Service\bin\Debug\net8.0\Buildify.Service.pdb
+D:\BIS Projects\Buildify.Backend\Buildify.Service\bin\Debug\net8.0\Buildify.Core.dll
+D:\BIS Projects\Buildify.Backend\Buildify.Service\bin\Debug\net8.0\Buildify.Core.pdb
+D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\Buildify.Service.csproj.AssemblyReference.cache
+D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\Buildify.Service.GeneratedMSBuildEditorConfig.editorconfig
+D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\Buildify.Service.AssemblyInfoInputs.cache
+D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\Buildify.Service.AssemblyInfo.cs
+D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\Buildify.Service.csproj.CoreCompileInputs.cache
+D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\Buildify.EF6BEF37.Up2Date
+D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\Buildify.Service.dll
+D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\refint\Buildify.Service.dll
+D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\Buildify.Service.pdb
+D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\ref\Buildify.Service.dll

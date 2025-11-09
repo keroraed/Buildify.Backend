@@ -1,0 +1,17 @@
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\bin\Debug\net8.0\Buildify.Repository.deps.json
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\bin\Debug\net8.0\Buildify.Repository.runtimeconfig.json
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\bin\Debug\net8.0\Buildify.Repository.dll
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\bin\Debug\net8.0\Buildify.Repository.pdb
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\bin\Debug\net8.0\Buildify.Core.dll
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\bin\Debug\net8.0\Buildify.Core.pdb
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\obj\Debug\net8.0\Buildify.Repository.csproj.AssemblyReference.cache
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\obj\Debug\net8.0\Buildify.Repository.GeneratedMSBuildEditorConfig.editorconfig
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\obj\Debug\net8.0\Buildify.Repository.AssemblyInfoInputs.cache
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\obj\Debug\net8.0\Buildify.Repository.AssemblyInfo.cs
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\obj\Debug\net8.0\Buildify.Repository.csproj.CoreCompileInputs.cache
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\obj\Debug\net8.0\Buildify.5E089F02.Up2Date
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\obj\Debug\net8.0\Buildify.Repository.dll
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\obj\Debug\net8.0\refint\Buildify.Repository.dll
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\obj\Debug\net8.0\Buildify.Repository.pdb
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\obj\Debug\net8.0\Buildify.Repository.genruntimeconfig.cache
+D:\BIS Projects\Buildify.Backend\Buildify.Repository\obj\Debug\net8.0\ref\Buildify.Repository.dll

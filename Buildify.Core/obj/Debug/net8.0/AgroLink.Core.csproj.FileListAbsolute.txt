@@ -1,0 +1,14 @@
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\bin\Debug\net8.0\AgroLink.Core.deps.json
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\bin\Debug\net8.0\AgroLink.Core.runtimeconfig.json
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\bin\Debug\net8.0\AgroLink.Core.dll
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\bin\Debug\net8.0\AgroLink.Core.pdb
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\obj\Debug\net8.0\AgroLink.Core.csproj.AssemblyReference.cache
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\obj\Debug\net8.0\AgroLink.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\obj\Debug\net8.0\AgroLink.Core.AssemblyInfoInputs.cache
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\obj\Debug\net8.0\AgroLink.Core.AssemblyInfo.cs
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\obj\Debug\net8.0\AgroLink.Core.csproj.CoreCompileInputs.cache
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\obj\Debug\net8.0\AgroLink.Core.dll
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\obj\Debug\net8.0\refint\AgroLink.Core.dll
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\obj\Debug\net8.0\AgroLink.Core.pdb
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\obj\Debug\net8.0\AgroLink.Core.genruntimeconfig.cache
+D:\BIS Projects\AgroLink.Backend\AgroLink.Core\obj\Debug\net8.0\ref\AgroLink.Core.dll

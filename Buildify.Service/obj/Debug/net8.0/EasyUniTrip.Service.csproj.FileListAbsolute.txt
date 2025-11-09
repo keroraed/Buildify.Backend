@@ -1,0 +1,15 @@
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\bin\Debug\net8.0\EasyUniTrip.Service.deps.json
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\bin\Debug\net8.0\EasyUniTrip.Service.dll
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\bin\Debug\net8.0\EasyUniTrip.Service.pdb
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\bin\Debug\net8.0\EasyUniTrip.Core.dll
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\bin\Debug\net8.0\EasyUniTrip.Core.pdb
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\obj\Debug\net8.0\EasyUniTrip.Service.csproj.AssemblyReference.cache
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\obj\Debug\net8.0\EasyUniTrip.Service.GeneratedMSBuildEditorConfig.editorconfig
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\obj\Debug\net8.0\EasyUniTrip.Service.AssemblyInfoInputs.cache
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\obj\Debug\net8.0\EasyUniTrip.Service.AssemblyInfo.cs
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\obj\Debug\net8.0\EasyUniTrip.Service.csproj.CoreCompileInputs.cache
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\obj\Debug\net8.0\EasyUniT.DC3703A1.Up2Date
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\obj\Debug\net8.0\EasyUniTrip.Service.dll
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\obj\Debug\net8.0\refint\EasyUniTrip.Service.dll
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\obj\Debug\net8.0\EasyUniTrip.Service.pdb
+D:\EasyUniTrip.Backend\EasyUniTrip.Service\obj\Debug\net8.0\ref\EasyUniTrip.Service.dll
