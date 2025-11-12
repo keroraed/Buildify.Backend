@@ -12,3 +12,4 @@ D:\BIS Projects\Buildify.Backend\Buildify.Core\obj\Debug\net8.0\refint\Buildify.
 D:\BIS Projects\Buildify.Backend\Buildify.Core\obj\Debug\net8.0\Buildify.Core.pdb
 D:\BIS Projects\Buildify.Backend\Buildify.Core\obj\Debug\net8.0\Buildify.Core.genruntimeconfig.cache
 D:\BIS Projects\Buildify.Backend\Buildify.Core\obj\Debug\net8.0\ref\Buildify.Core.dll
+D:\BIS Projects\Buildify.Backend\Buildify.Core\obj\Debug\net8.0\Buildify.Core.sourcelink.json

@@ -14,24 +14,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 15,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Buildify.APIs",
+              "Title": "Buildify.APIs.csproj",
               "DocumentMoniker": "D:\\BIS Projects\\Buildify.Backend\\Buildify.APIs\\Buildify.APIs.csproj",
               "RelativeDocumentMoniker": "Buildify.APIs\\Buildify.APIs.csproj",
               "ToolTip": "D:\\BIS Projects\\Buildify.Backend\\Buildify.APIs\\Buildify.APIs.csproj",
               "RelativeToolTip": "Buildify.APIs\\Buildify.APIs.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABQAAAAAAAAAAAAAABcAAABOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
               "WhenOpened": "2025-11-09T12:42:09.075Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             }
           ]
         },

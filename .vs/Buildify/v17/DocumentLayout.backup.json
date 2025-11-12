@@ -1,7 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\BIS Projects\\Buildify.Backend\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{74961373-7A3A-4155-8229-0799879746F4}|Buildify.APIs\\Buildify.APIs.csproj|d:\\bis projects\\buildify.backend\\buildify.apis\\buildify.apis.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{74961373-7A3A-4155-8229-0799879746F4}|Buildify.APIs\\Buildify.APIs.csproj|solutionrelative:buildify.apis\\buildify.apis.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +14,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 15,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Buildify.APIs.csproj",
+              "DocumentMoniker": "D:\\BIS Projects\\Buildify.Backend\\Buildify.APIs\\Buildify.APIs.csproj",
+              "RelativeDocumentMoniker": "Buildify.APIs\\Buildify.APIs.csproj",
+              "ToolTip": "D:\\BIS Projects\\Buildify.Backend\\Buildify.APIs\\Buildify.APIs.csproj",
+              "RelativeToolTip": "Buildify.APIs\\Buildify.APIs.csproj",
+              "ViewState": "AgIAABQAAAAAAAAAAAAAABcAAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-11-09T12:42:09.075Z",
+              "EditorCaption": ""
             }
           ]
         },

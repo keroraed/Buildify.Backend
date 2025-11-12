@@ -13,6 +13,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add Razor Pages for Admin Area
+builder.Services.AddRazorPages();
+
+// Add HttpClient for calling API from Razor Pages
+builder.Services.AddHttpClient();
+
 // Add Application Services
 builder.Services.AddApplicationServices(builder.Configuration);
 
@@ -86,5 +92,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapRazorPages();
 
 app.Run();

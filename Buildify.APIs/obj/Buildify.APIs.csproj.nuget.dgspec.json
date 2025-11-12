@@ -314,6 +314,9 @@
             "projectReferences": {
               "D:\\BIS Projects\\Buildify.Backend\\Buildify.Core\\Buildify.Core.csproj": {
                 "projectPath": "D:\\BIS Projects\\Buildify.Backend\\Buildify.Core\\Buildify.Core.csproj"
+              },
+              "D:\\BIS Projects\\Buildify.Backend\\Buildify.Repository\\Buildify.Repository.csproj": {
+                "projectPath": "D:\\BIS Projects\\Buildify.Backend\\Buildify.Repository\\Buildify.Repository.csproj"
               }
             }
           }

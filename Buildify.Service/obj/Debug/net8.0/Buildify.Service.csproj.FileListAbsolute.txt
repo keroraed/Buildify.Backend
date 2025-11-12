@@ -13,3 +13,6 @@ D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\Buildify.Serv
 D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\refint\Buildify.Service.dll
 D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\Buildify.Service.pdb
 D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\ref\Buildify.Service.dll
+D:\BIS Projects\Buildify.Backend\Buildify.Service\obj\Debug\net8.0\Buildify.Service.sourcelink.json
+D:\BIS Projects\Buildify.Backend\Buildify.Service\bin\Debug\net8.0\Buildify.Repository.dll
+D:\BIS Projects\Buildify.Backend\Buildify.Service\bin\Debug\net8.0\Buildify.Repository.pdb

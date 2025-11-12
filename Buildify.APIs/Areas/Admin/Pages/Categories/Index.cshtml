@@ -1,0 +1,132 @@
+@page
+@model Buildify.APIs.Areas.Admin.Pages.Categories.IndexModel
+@{
+    ViewData["Title"] = "Categories Management";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4">
+                <i class="bi bi-grid"></i> Categories Management
+            </h1>
+            <p class="text-muted">Manage your product categories</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> <strong>Success!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Categories Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="table-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-list-ul"></i> All Categories
+                    </h4>
+                    <div>
+                        <span class="badge bg-primary me-2">Total: @Model.Categories.Count</span>
+                        <button class="btn btn-success" onclick="window.location.href='/Admin/Categories/Create'">
+                            <i class="bi bi-plus-circle"></i> Add New Category
+                        </button>
+                    </div>
+                </div>
+                
+                @if (Model.Categories != null && Model.Categories.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <tr>
+                                        <td><strong>#@category.Id</strong></td>
+                                        <td>
+                                            <strong class="fs-6">@category.Name</strong>
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(category.Description))
+                                            {
+                                                if (category.Description.Length > 100)
+                                                {
+                                                    <span>@category.Description.Substring(0, 100)...</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@category.Description</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <em class="text-muted">No description</em>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="/Admin/Categories/Edit/@category.Id" class="btn btn-sm btn-primary" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="/Admin/Categories/Details/@category.Id" class="btn btn-sm btn-info" title="Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete(@category.Id, '@category.Name')" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else if (string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> No categories found. Start by adding your first category!
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(categoryId, categoryName) {
+            if (confirm(`Are you sure you want to delete "${categoryName}"?`)) {
+                window.location.href = `/Admin/Categories/Delete/${categoryId}`;
+            }
+        }
+    </script>
+}

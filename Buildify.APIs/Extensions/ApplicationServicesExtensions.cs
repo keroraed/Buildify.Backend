@@ -26,11 +26,13 @@ public static class ApplicationServicesExtensions
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IOtpRepository, OtpRepository>();
+        services.AddScoped<ICartRepository, CartRepository>();
 
         // Register services
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IOtpService, OtpService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IDashboardService, DashboardService>();
 
         // Configure API behavior options
         services.Configure<ApiBehaviorOptions>(options =>

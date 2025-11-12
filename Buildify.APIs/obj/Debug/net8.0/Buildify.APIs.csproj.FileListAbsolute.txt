@@ -163,3 +163,7 @@ D:\BIS Projects\Buildify.Backend\Buildify.APIs\obj\Debug\net8.0\refint\Buildify.
 D:\BIS Projects\Buildify.Backend\Buildify.APIs\obj\Debug\net8.0\Buildify.APIs.pdb
 D:\BIS Projects\Buildify.Backend\Buildify.APIs\obj\Debug\net8.0\Buildify.APIs.genruntimeconfig.cache
 D:\BIS Projects\Buildify.Backend\Buildify.APIs\obj\Debug\net8.0\ref\Buildify.APIs.dll
+D:\BIS Projects\Buildify.Backend\Buildify.APIs\obj\Debug\net8.0\Buildify.APIs.sourcelink.json
+D:\BIS Projects\Buildify.Backend\Buildify.APIs\obj\Debug\net8.0\Buildify.APIs.RazorAssemblyInfo.cache
+D:\BIS Projects\Buildify.Backend\Buildify.APIs\obj\Debug\net8.0\Buildify.APIs.RazorAssemblyInfo.cs
+D:\BIS Projects\Buildify.Backend\Buildify.APIs\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

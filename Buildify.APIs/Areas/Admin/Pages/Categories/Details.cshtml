@@ -1,0 +1,202 @@
+@page "{id:int}"
+@model Buildify.APIs.Areas.Admin.Pages.Categories.DetailsModel
+@{
+    ViewData["Title"] = "Category Details";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Admin/Dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/Admin/Categories">Categories</a></li>
+                    <li class="breadcrumb-item active">Category Details #@Model.Id</li>
+                </ol>
+            </nav>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-4">
+                        <i class="bi bi-eye"></i> Category Details
+                    </h1>
+                    <p class="text-muted">View detailed category information</p>
+                </div>
+                <div>
+                    <a href="/Admin/Categories" class="btn btn-secondary me-2">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                    @if (Model.Category != null)
+                    {
+                        <a href="/Admin/Categories/Edit/@Model.Id" class="btn btn-primary">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Category != null)
+    {
+        <div class="row">
+            <!-- Category Information -->
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Category Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 150px;"><i class="bi bi-hash"></i> Category ID:</th>
+                                    <td><strong>#@Model.Category.Id</strong></td>
+                                </tr>
+                                <tr>
+                                    <th><i class="bi bi-tag"></i> Category Name:</th>
+                                    <td><strong class="fs-4">@Model.Category.Name</strong></td>
+                                </tr>
+                                <tr>
+                                    <th><i class="bi bi-card-text"></i> Description:</th>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(Model.Category.Description))
+                                        {
+                                            @Model.Category.Description
+                                        }
+                                        else
+                                        {
+                                            <em class="text-muted">No description provided</em>
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Card -->
+                <div class="card mt-3">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="/Admin/Categories/Edit/@Model.Id" class="btn btn-primary">
+                                <i class="bi bi-pencil"></i> Edit Category
+                            </a>
+                            <a href="/Admin/Categories" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Categories
+                            </a>
+                            @if (Model.CategoryProducts.Count == 0)
+                            {
+                                <button type="button" class="btn btn-danger" onclick="confirmDelete(@Model.Category.Id, '@Model.Category.Name')">
+                                    <i class="bi bi-trash"></i> Delete Category
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-danger" disabled title="Cannot delete category with products">
+                                    <i class="bi bi-trash"></i> Delete Category
+                                </button>
+                            }
+                        </div>
+                        @if (Model.CategoryProducts.Count > 0)
+                        {
+                            <div class="alert alert-warning mt-3 mb-0">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                <small>Cannot delete this category because it contains @Model.CategoryProducts.Count product(s).</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products in Category -->
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-box-seam"></i> Products in Category
+                            <span class="badge bg-light text-dark ms-2">@Model.CategoryProducts.Count</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.CategoryProducts.Any())
+                        {
+                            <div class="list-group">
+                                @foreach (var product in Model.CategoryProducts.Take(10))
+                                {
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                                {
+                                                    <img src="@product.ImageUrl" alt="@product.Name" class="me-3" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                                }
+                                                else
+                                                {
+                                                    <div class="bg-light d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; border-radius: 4px;">
+                                                        <i class="bi bi-image text-muted"></i>
+                                                    </div>
+                                                }
+                                                <div>
+                                                    <h6 class="mb-0">@product.Name</h6>
+                                                    <small class="text-muted">Stock: @product.Stock</small>
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <strong class="text-success d-block">$@product.Price.ToString("N2")</strong>
+                                                <a href="/Admin/Products/Details/@product.Id" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            @if (Model.CategoryProducts.Count > 10)
+                            {
+                                <div class="text-center mt-3">
+                                    <small class="text-muted">Showing 10 of @Model.CategoryProducts.Count products</small>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-info-circle"></i> No products in this category yet.
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading category details...</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(categoryId, categoryName) {
+            if (confirm(`Are you sure you want to delete "${categoryName}"?`)) {
+                window.location.href = `/Admin/Categories/Delete/${categoryId}`;
+            }
+        }
+    </script>
+}

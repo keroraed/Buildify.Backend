@@ -1,0 +1,222 @@
+@page "{id:int}"
+@model Buildify.APIs.Areas.Admin.Pages.Products.DetailsModel
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Admin/Dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/Admin/Products">Products</a></li>
+                    <li class="breadcrumb-item active">Product Details #@Model.Id</li>
+                </ol>
+            </nav>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-4">
+                        <i class="bi bi-eye"></i> Product Details
+                    </h1>
+                    <p class="text-muted">View detailed product information</p>
+                </div>
+                <div>
+                    <a href="/Admin/Products" class="btn btn-secondary me-2">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                    @if (Model.Product != null)
+                    {
+                        <a href="/Admin/Products/Edit/@Model.Id" class="btn btn-primary">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Product != null)
+    {
+        <div class="row">
+            <!-- Product Image -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-image"></i> Product Image</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        @if (!string.IsNullOrEmpty(Model.Product.ImageUrl))
+                        {
+                            <img src="@Model.Product.ImageUrl" alt="@Model.Product.Name" class="img-fluid rounded" style="max-height: 400px; object-fit: contain;">
+                        }
+                        else
+                        {
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 300px; border-radius: 8px;">
+                                <div class="text-center">
+                                    <i class="bi bi-image text-muted" style="font-size: 4rem;"></i>
+                                    <p class="text-muted mt-2">No image available</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Stock Status Card -->
+                <div class="card mt-3">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-graph-up"></i> Stock Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h2 class="display-4 @(Model.Product.Stock <= 10 ? (Model.Product.Stock == 0 ? "text-danger" : "text-warning") : "text-success")">
+                                @Model.Product.Stock
+                            </h2>
+                            <p class="text-muted">Units in Stock</p>
+                            @if (Model.Product.Stock == 0)
+                            {
+                                <span class="badge bg-danger fs-6">
+                                    <i class="bi bi-x-circle"></i> Out of Stock
+                                </span>
+                            }
+                            else if (Model.Product.Stock <= 10)
+                            {
+                                <span class="badge bg-warning fs-6">
+                                    <i class="bi bi-exclamation-triangle"></i> Low Stock
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success fs-6">
+                                    <i class="bi bi-check-circle"></i> In Stock
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Information -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Product Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 200px;"><i class="bi bi-hash"></i> Product ID:</th>
+                                    <td><strong>#@Model.Product.Id</strong></td>
+                                </tr>
+                                <tr>
+                                    <th><i class="bi bi-tag"></i> Product Name:</th>
+                                    <td><strong class="fs-5">@Model.Product.Name</strong></td>
+                                </tr>
+                                <tr>
+                                    <th><i class="bi bi-card-text"></i> Description:</th>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(Model.Product.Description))
+                                        {
+                                            @Model.Product.Description
+                                        }
+                                        else
+                                        {
+                                            <em class="text-muted">No description provided</em>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th><i class="bi bi-currency-dollar"></i> Price:</th>
+                                    <td>
+                                        <strong class="text-success fs-4">$@Model.Product.Price.ToString("N2")</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th><i class="bi bi-grid"></i> Category:</th>
+                                    <td>
+                                        <span class="badge bg-secondary fs-6">@Model.Product.CategoryName</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th><i class="bi bi-box-seam"></i> Stock Quantity:</th>
+                                    <td>
+                                        <strong class="@(Model.Product.Stock <= 10 ? (Model.Product.Stock == 0 ? "text-danger" : "text-warning") : "text-success")">
+                                            @Model.Product.Stock units
+                                        </strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th><i class="bi bi-calendar-plus"></i> Created Date:</th>
+                                    <td>
+                                        @Model.Product.CreatedDate.ToString("MMMM dd, yyyy")
+                                        <br>
+                                        <small class="text-muted">@Model.Product.CreatedDate.ToString("hh:mm tt")</small>
+                                    </td>
+                                </tr>
+                                @if (!string.IsNullOrEmpty(Model.Product.ImageUrl))
+                                {
+                                    <tr>
+                                        <th><i class="bi bi-link-45deg"></i> Image URL:</th>
+                                        <td>
+                                            <a href="@Model.Product.ImageUrl" target="_blank" class="text-break">
+                                                @Model.Product.ImageUrl
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Actions Card -->
+                <div class="card mt-3">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="/Admin/Products/Edit/@Model.Id" class="btn btn-primary">
+                                <i class="bi bi-pencil"></i> Edit Product
+                            </a>
+                            <a href="/Admin/Products" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Products
+                            </a>
+                            <button type="button" class="btn btn-danger" onclick="confirmDelete(@Model.Product.Id, '@Model.Product.Name')">
+                                <i class="bi bi-trash"></i> Delete Product
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading product details...</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(productId, productName) {
+            if (confirm(`Are you sure you want to delete "${productName}"?`)) {
+                window.location.href = `/Admin/Products/Delete/${productId}`;
+            }
+        }
+    </script>
+}

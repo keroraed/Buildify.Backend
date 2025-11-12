@@ -22,7 +22,7 @@ namespace Buildify.Repository.Identity.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Resouq.Core.Entities.Identity.Address", b =>
+            modelBuilder.Entity("Buildify.Core.Entities.Identity.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -69,7 +69,7 @@ namespace Buildify.Repository.Identity.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("Resouq.Core.Entities.Identity.AppUser", b =>
+            modelBuilder.Entity("Buildify.Core.Entities.Identity.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -147,7 +147,7 @@ namespace Buildify.Repository.Identity.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Resouq.Core.Entities.Identity.Otp", b =>
+            modelBuilder.Entity("Buildify.Core.Entities.Identity.Otp", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -322,9 +322,9 @@ namespace Buildify.Repository.Identity.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Resouq.Core.Entities.Identity.Address", b =>
+            modelBuilder.Entity("Buildify.Core.Entities.Identity.Address", b =>
                 {
-                    b.HasOne("Resouq.Core.Entities.Identity.AppUser", "AppUser")
+                    b.HasOne("Buildify.Core.Entities.Identity.AppUser", "AppUser")
                         .WithMany("Addresses")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -344,7 +344,7 @@ namespace Buildify.Repository.Identity.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Resouq.Core.Entities.Identity.AppUser", null)
+                    b.HasOne("Buildify.Core.Entities.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -353,7 +353,7 @@ namespace Buildify.Repository.Identity.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Resouq.Core.Entities.Identity.AppUser", null)
+                    b.HasOne("Buildify.Core.Entities.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -368,7 +368,7 @@ namespace Buildify.Repository.Identity.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Resouq.Core.Entities.Identity.AppUser", null)
+                    b.HasOne("Buildify.Core.Entities.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -377,14 +377,14 @@ namespace Buildify.Repository.Identity.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Resouq.Core.Entities.Identity.AppUser", null)
+                    b.HasOne("Buildify.Core.Entities.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Resouq.Core.Entities.Identity.AppUser", b =>
+            modelBuilder.Entity("Buildify.Core.Entities.Identity.AppUser", b =>
                 {
                     b.Navigation("Addresses");
                 });

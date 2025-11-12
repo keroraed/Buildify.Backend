@@ -178,7 +178,7 @@ public class EmailService : IEmailService
                     <!-- Info Box -->
                     <div style='background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 8px; padding: 15px 20px; margin: 25px 0;'>
                         <p style='margin: 0; color: #1e40af; font-size: 14px; line-height: 1.5;'>
-                            <strong>?? Note:</strong> If you didn't create an account with Resouq, you can safely ignore this email.
+                            <strong>?? Note:</strong> If you didn't create an account with Buildify, you can safely ignore this email.
                         </p>
                     </div>
                     

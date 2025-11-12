@@ -1779,6 +1779,7 @@
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "Buildify.Core": "1.0.0",
+          "Buildify.Repository": "1.0.0",
           "MailKit": "4.9.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.11"
         },

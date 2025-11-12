@@ -1,0 +1,25 @@
+@page
+@model Buildify.APIs.Areas.Admin.Pages.Account.LogoutModel
+@{
+    ViewData["Title"] = "Logout";
+    Layout = "_LoginLayout";
+}
+
+<div class="login-container">
+    <div class="login-card text-center">
+        <i class="bi bi-box-arrow-right login-icon text-warning"></i>
+        <h2 class="fw-bold mb-3">Sign Out</h2>
+        <p class="text-muted mb-4">Are you sure you want to sign out of the admin panel?</p>
+
+        <form method="post">
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-danger btn-lg">
+                    <i class="bi bi-box-arrow-right"></i> Yes, Sign Out
+                </button>
+                <a href="/Admin/Dashboard" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

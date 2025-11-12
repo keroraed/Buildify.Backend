@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Buildify.Repository")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e27b53175494d88f9bc96ba8b8c4504e69072064")]
 [assembly: System.Reflection.AssemblyProductAttribute("Buildify.Repository")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Buildify.Repository")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

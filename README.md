@@ -28,6 +28,36 @@ A complete ASP.NET Core 8.0 Web API project built with Clean Architecture, featu
 - ✅ User Profile Management (Get/Update)
 - ✅ Address Management (CRUD operations)
 
+### Products & Categories
+- ✅ Product Management (CRUD operations)
+- ✅ Category Management (CRUD operations)
+- ✅ Get Products by Category
+- ✅ Product-Category relationships
+- ✅ Admin-only product and category modifications
+
+### Shopping Cart
+- ✅ View Cart (with calculated totals)
+- ✅ Add to Cart (with stock validation)
+- ✅ Update Cart Item Quantity
+- ✅ Remove Item from Cart
+- ✅ Clear entire Cart
+- ✅ User-specific cart management
+
+### Orders
+- ✅ Create Order from Cart
+- ✅ View User Orders
+- ✅ View Single Order Details
+- ✅ Automatic Stock Reduction
+- ✅ Order Status Tracking (Pending, Processing, Shipped, Delivered, Cancelled)
+- ✅ Admin: View All Orders
+- ✅ Admin: Update Order Status
+- ✅ Shipping Address Management
+
+### Dashboard (Admin)
+- ✅ Dashboard Statistics (Total Orders, Revenue, Products, Users)
+- ✅ Recent Orders Overview (Last 10 orders)
+- ✅ Low Stock Products Alert (Products with stock <= 10)
+
 ### Security Features
 - 🔐 JWT Bearer Authentication
 - 🔐 Password Hashing using ASP.NET Core Identity
@@ -139,6 +169,53 @@ Navigate to: https://localhost:7101/swagger
 
 ## API Endpoints
 
+### Products
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/products` | Get all products with categories | No |
+| GET | `/api/products/{id}` | Get single product by ID | No |
+| GET | `/api/products/category/{categoryId}` | Get products by category | No |
+| POST | `/api/products` | Create new product | Yes (Admin) |
+| PUT | `/api/products/{id}` | Update product | Yes (Admin) |
+| DELETE | `/api/products/{id}` | Delete product | Yes (Admin) |
+
+### Categories
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/categories` | Get all categories | No |
+| GET | `/api/categories/{id}` | Get single category by ID | No |
+| POST | `/api/categories` | Create new category | Yes (Admin) |
+| PUT | `/api/categories/{id}` | Update category | Yes (Admin) |
+| DELETE | `/api/categories/{id}` | Delete category | Yes (Admin) |
+
+### Cart
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/cart` | Get current user's cart | Yes |
+| POST | `/api/cart` | Add product to cart | Yes |
+| PUT | `/api/cart/{itemId}` | Update cart item quantity | Yes |
+| DELETE | `/api/cart/{itemId}` | Remove item from cart | Yes |
+| DELETE | `/api/cart` | Clear entire cart | Yes |
+
+### Orders
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/orders` | Get current user's orders | Yes |
+| GET | `/api/orders/{id}` | Get single order details | Yes |
+| POST | `/api/orders` | Create order from cart | Yes |
+| GET | `/api/orders/admin` | Get all orders | Yes (Admin) |
+| PUT | `/api/orders/{id}/status` | Update order status | Yes (Admin) |
+
+### Dashboard (Admin Only)
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/dashboard/stats` | Get dashboard statistics | Yes (Admin) |
+
 ### Account Management
 
 | Method | Endpoint | Description | Auth Required |
@@ -163,6 +240,695 @@ Navigate to: https://localhost:7101/swagger
 | GET | `/api/account/token` | Get JWT token | Yes |
 
 ## Testing the API
+
+### Example: Products API
+
+1. **Get All Products:**
+```json
+GET /api/products
+
+Response:
+[
+  {
+    "id": 1,
+    "name": "Cement Bag",
+    "description": "50kg Premium Portland Cement",
+    "price": 45.99,
+    "stock": 150,
+    "categoryId": 1,
+    "categoryName": "Building Materials",
+    "imageUrl": "https://example.com/cement.jpg",
+    "createdDate": "2025-11-12T10:30:00Z"
+  }
+]
+```
+
+2. **Get Single Product:**
+```json
+GET /api/products/1
+
+Response:
+{
+  "id": 1,
+  "name": "Cement Bag",
+  "description": "50kg Premium Portland Cement",
+  "price": 45.99,
+  "stock": 150,
+  "categoryId": 1,
+  "categoryName": "Building Materials",
+  "imageUrl": "https://example.com/cement.jpg",
+  "createdDate": "2025-11-12T10:30:00Z"
+}
+```
+
+3. **Get Products by Category:**
+```json
+GET /api/products/category/1
+
+Response:
+[
+  {
+    "id": 1,
+    "name": "Cement Bag",
+    "description": "50kg Premium Portland Cement",
+    "price": 45.99,
+    "stock": 150,
+    "categoryId": 1,
+    "categoryName": "Building Materials",
+    "imageUrl": "https://example.com/cement.jpg",
+    "createdDate": "2025-11-12T10:30:00Z"
+  }
+]
+```
+
+4. **Create Product (Admin Only):**
+```json
+POST /api/products
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "name": "Cement Bag",
+  "description": "50kg Premium Portland Cement",
+  "price": 45.99,
+  "stock": 150,
+  "categoryId": 1,
+  "imageUrl": "https://example.com/cement.jpg"
+}
+
+Response:
+{
+  "id": 1,
+  "name": "Cement Bag",
+  "description": "50kg Premium Portland Cement",
+  "price": 45.99,
+  "stock": 150,
+  "categoryId": 1,
+  "categoryName": "Building Materials",
+  "imageUrl": "https://example.com/cement.jpg",
+  "createdDate": "2025-11-12T10:30:00Z"
+}
+```
+
+5. **Update Product (Admin Only):**
+```json
+PUT /api/products/1
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "name": "Cement Bag - Updated",
+  "description": "50kg Premium Portland Cement - New Formula",
+  "price": 49.99,
+  "stock": 200,
+  "categoryId": 1,
+  "imageUrl": "https://example.com/cement-new.jpg"
+}
+
+Response:
+{
+  "id": 1,
+  "name": "Cement Bag - Updated",
+  "description": "50kg Premium Portland Cement - New Formula",
+  "price": 49.99,
+  "stock": 200,
+  "categoryId": 1,
+  "categoryName": "Building Materials",
+  "imageUrl": "https://example.com/cement-new.jpg",
+  "createdDate": "2025-11-12T10:30:00Z"
+}
+```
+
+6. **Delete Product (Admin Only):**
+```json
+DELETE /api/products/1
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+
+Response:
+{
+  "statusCode": 200,
+  "message": "Product deleted successfully"
+}
+```
+
+### Example: Categories API
+
+1. **Get All Categories:**
+```json
+GET /api/categories
+
+Response:
+[
+  {
+    "id": 1,
+    "name": "Building Materials",
+    "description": "Cement, bricks, concrete, etc."
+  },
+  {
+    "id": 2,
+    "name": "Tools",
+    "description": "Hand tools and power tools"
+  }
+]
+```
+
+2. **Get Single Category:**
+```json
+GET /api/categories/1
+
+Response:
+{
+  "id": 1,
+  "name": "Building Materials",
+  "description": "Cement, bricks, concrete, etc."
+}
+```
+
+3. **Create Category (Admin Only):**
+```json
+POST /api/categories
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "name": "Building Materials",
+  "description": "Cement, bricks, concrete, etc."
+}
+
+Response:
+{
+  "id": 1,
+  "name": "Building Materials",
+  "description": "Cement, bricks, concrete, etc."
+}
+```
+
+4. **Update Category (Admin Only):**
+```json
+PUT /api/categories/1
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "name": "Construction Materials",
+  "description": "All types of construction materials"
+}
+
+Response:
+{
+  "id": 1,
+  "name": "Construction Materials",
+  "description": "All types of construction materials"
+}
+```
+
+5. **Delete Category (Admin Only):**
+```json
+DELETE /api/categories/1
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+
+Response:
+{
+  "statusCode": 200,
+  "message": "Category deleted successfully"
+}
+
+Error (if category has products):
+{
+  "statusCode": 400,
+  "message": "Cannot delete category with existing products"
+}
+```
+
+### Example: Cart API
+
+1. **Get Cart:**
+```json
+GET /api/cart
+Authorization: Bearer YOUR_JWT_TOKEN
+
+Response:
+{
+  "id": 1,
+  "userId": "user123",
+  "createdDate": "2025-11-12T10:00:00Z",
+  "updatedDate": "2025-11-12T10:30:00Z",
+  "items": [
+    {
+      "id": 1,
+      "productId": 1,
+      "productName": "Cement Bag",
+      "productImageUrl": "https://example.com/cement.jpg",
+      "quantity": 2,
+      "price": 45.99,
+      "subtotal": 91.98
+    },
+    {
+      "id": 2,
+      "productId": 5,
+      "productName": "Steel Rods",
+      "productImageUrl": "https://example.com/steel.jpg",
+      "quantity": 10,
+      "price": 12.50,
+      "subtotal": 125.00
+    }
+  ],
+  "totalPrice": 216.98,
+  "totalItems": 12
+}
+
+Response (empty cart):
+{
+  "userId": "user123",
+  "createdDate": "2025-11-12T10:00:00Z",
+  "items": [],
+  "totalPrice": 0,
+  "totalItems": 0
+}
+```
+
+2. **Add to Cart:**
+```json
+POST /api/cart
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "quantity": 2
+}
+
+Response:
+{
+  "id": 1,
+  "userId": "user123",
+  "createdDate": "2025-11-12T10:00:00Z",
+  "updatedDate": "2025-11-12T10:30:00Z",
+  "items": [
+    {
+      "id": 1,
+      "productId": 1,
+      "productName": "Cement Bag",
+      "productImageUrl": "https://example.com/cement.jpg",
+      "quantity": 2,
+      "price": 45.99,
+      "subtotal": 91.98
+    }
+  ],
+  "totalPrice": 91.98,
+  "totalItems": 2
+}
+
+Error (insufficient stock):
+{
+  "statusCode": 400,
+  "message": "Only 5 items available in stock"
+}
+```
+
+3. **Update Cart Item Quantity:**
+```json
+PUT /api/cart/1
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "quantity": 5
+}
+
+Response:
+{
+  "id": 1,
+  "userId": "user123",
+  "createdDate": "2025-11-12T10:00:00Z",
+  "updatedDate": "2025-11-12T10:45:00Z",
+  "items": [
+    {
+      "id": 1,
+      "productId": 1,
+      "productName": "Cement Bag",
+      "productImageUrl": "https://example.com/cement.jpg",
+      "quantity": 5,
+      "price": 45.99,
+      "subtotal": 229.95
+    }
+  ],
+  "totalPrice": 229.95,
+  "totalItems": 5
+}
+```
+
+4. **Delete Cart Item:**
+```json
+DELETE /api/cart/1
+Authorization: Bearer YOUR_JWT_TOKEN
+
+Response:
+{
+  "id": 1,
+  "userId": "user123",
+  "createdDate": "2025-11-12T10:00:00Z",
+  "updatedDate": "2025-11-12T10:50:00Z",
+  "items": [],
+  "totalPrice": 0,
+  "totalItems": 0
+}
+```
+
+5. **Clear Cart:**
+```json
+DELETE /api/cart
+Authorization: Bearer YOUR_JWT_TOKEN
+
+Response:
+{
+  "statusCode": 200,
+  "message": "Cart cleared successfully"
+}
+```
+
+### Example: Orders API
+
+1. **Get User Orders:**
+```json
+GET /api/orders
+Authorization: Bearer YOUR_JWT_TOKEN
+
+Response:
+[
+  {
+    "id": 1,
+    "userId": "user123",
+    "orderDate": "2025-11-12T11:00:00Z",
+    "totalPrice": 229.95,
+    "status": "Processing",
+    "shippingAddress": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "street": "123 Main St",
+      "city": "New York",
+      "state": "NY",
+      "zipCode": "10001",
+      "country": "USA"
+    },
+    "orderItems": [
+      {
+        "id": 1,
+        "productId": 1,
+        "productName": "Cement Bag",
+        "productImageUrl": "https://example.com/cement.jpg",
+        "price": 45.99,
+        "quantity": 5,
+        "subtotal": 229.95
+      }
+    ],
+    "updatedDate": "2025-11-12T12:00:00Z"
+  }
+]
+```
+
+2. **Get Single Order:**
+```json
+GET /api/orders/1
+Authorization: Bearer YOUR_JWT_TOKEN
+
+Response:
+{
+  "id": 1,
+  "userId": "user123",
+  "orderDate": "2025-11-12T11:00:00Z",
+  "totalPrice": 229.95,
+  "status": "Processing",
+  "shippingAddress": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10001",
+    "country": "USA"
+  },
+  "orderItems": [
+    {
+      "id": 1,
+      "productId": 1,
+      "productName": "Cement Bag",
+      "productImageUrl": "https://example.com/cement.jpg",
+      "price": 45.99,
+      "quantity": 5,
+      "subtotal": 229.95
+    }
+  ],
+  "updatedDate": "2025-11-12T12:00:00Z"
+}
+```
+
+3. **Create Order from Cart:**
+```json
+POST /api/orders
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "shippingAddress": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10001",
+    "country": "USA"
+  }
+}
+
+Response:
+{
+  "id": 1,
+  "userId": "user123",
+  "orderDate": "2025-11-12T11:00:00Z",
+  "totalPrice": 229.95,
+  "status": "Pending",
+  "shippingAddress": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10001",
+    "country": "USA"
+  },
+  "orderItems": [
+    {
+      "id": 1,
+      "productId": 1,
+      "productName": "Cement Bag",
+      "productImageUrl": "https://example.com/cement.jpg",
+      "price": 45.99,
+      "quantity": 5,
+      "subtotal": 229.95
+    }
+  ],
+  "updatedDate": null
+}
+
+Note: 
+- Cart will be automatically cleared after successful order
+- Product stock will be automatically reduced
+- Order starts with "Pending" status
+
+Error (empty cart):
+{
+  "statusCode": 400,
+  "message": "Cart is empty"
+}
+
+Error (insufficient stock):
+{
+  "statusCode": 400,
+  "message": "Insufficient stock for Cement Bag. Available: 3"
+}
+```
+
+4. **Get All Orders (Admin Only):**
+```json
+GET /api/orders/admin
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+
+Response:
+[
+  {
+    "id": 1,
+    "userId": "user123",
+    "orderDate": "2025-11-12T11:00:00Z",
+    "totalPrice": 229.95,
+    "status": "Processing",
+    "shippingAddress": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "street": "123 Main St",
+      "city": "New York",
+      "state": "NY",
+      "zipCode": "10001",
+      "country": "USA"
+    },
+    "orderItems": [
+      {
+        "id": 1,
+        "productId": 1,
+        "productName": "Cement Bag",
+        "productImageUrl": "https://example.com/cement.jpg",
+        "price": 45.99,
+        "quantity": 5,
+        "subtotal": 229.95
+      }
+    ],
+    "updatedDate": "2025-11-12T12:00:00Z"
+  },
+  {
+    "id": 2,
+    "userId": "user456",
+    "orderDate": "2025-11-12T10:00:00Z",
+    "totalPrice": 125.00,
+    "status": "Delivered",
+    "shippingAddress": {
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "street": "456 Oak Ave",
+      "city": "Los Angeles",
+      "state": "CA",
+      "zipCode": "90001",
+      "country": "USA"
+    },
+    "orderItems": [
+      {
+        "id": 2,
+        "productId": 5,
+        "productName": "Steel Rods",
+        "productImageUrl": "https://example.com/steel.jpg",
+        "price": 12.50,
+        "quantity": 10,
+        "subtotal": 125.00
+      }
+    ],
+    "updatedDate": "2025-11-12T11:30:00Z"
+  }
+]
+```
+
+5. **Update Order Status (Admin Only):**
+```json
+PUT /api/orders/1/status
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "status": 2
+}
+
+Response:
+{
+  "id": 1,
+  "userId": "user123",
+  "orderDate": "2025-11-12T11:00:00Z",
+  "totalPrice": 229.95,
+  "status": "Processing",
+  "shippingAddress": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10001",
+    "country": "USA"
+  },
+  "orderItems": [
+    {
+      "id": 1,
+      "productId": 1,
+      "productName": "Cement Bag",
+      "productImageUrl": "https://example.com/cement.jpg",
+      "price": 45.99,
+      "quantity": 5,
+      "subtotal": 229.95
+    }
+  ],
+  "updatedDate": "2025-11-12T13:00:00Z"
+}
+
+Order Status Values:
+- 1 = Pending
+- 2 = Processing
+- 3 = Shipped
+- 4 = Delivered
+- 5 = Cancelled
+```
+
+### Example: Dashboard Statistics (Admin Only)
+
+**Get Dashboard Stats:**
+```json
+GET /api/dashboard/stats
+Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+
+Response:
+{
+  "totalOrders": 150,
+  "totalRevenue": 45000.00,
+  "totalProducts": 45,
+  "totalUsers": 320,
+  "recentOrders": [
+    {
+      "id": 25,
+      "userId": "user123",
+      "orderDate": "2025-11-12T14:30:00Z",
+      "totalPrice": 299.99,
+      "status": "Pending"
+    },
+    {
+      "id": 24,
+      "userId": "user456",
+      "orderDate": "2025-11-12T13:15:00Z",
+      "totalPrice": 125.50,
+      "status": "Processing"
+    },
+    {
+      "id": 23,
+      "userId": "user789",
+      "orderDate": "2025-11-12T11:00:00Z",
+      "totalPrice": 450.00,
+      "status": "Shipped"
+    }
+  ],
+  "lowStockProducts": [
+    {
+      "id": 12,
+      "name": "Premium Paint - White",
+      "stock": 3,
+      "categoryName": "Paint & Finishing"
+    },
+    {
+      "id": 8,
+      "name": "Steel Rods - 12mm",
+      "stock": 5,
+      "categoryName": "Building Materials"
+    },
+    {
+      "id": 15,
+      "name": "Wood Planks - Oak",
+      "stock": 7,
+      "categoryName": "Timber"
+    }
+  ]
+}
+
+Features:
+- Total Orders: Count of all orders in the system
+- Total Revenue: Sum of all order totals
+- Total Products: Count of all products in catalog
+- Total Users: Count of all registered users
+- Recent Orders: Last 10 orders ordered by date (newest first)
+- Low Stock Products: Products with stock <= 10, ordered by stock level (lowest first)
+```
 
 ### Example: Registration & Email Verification Flow
 
@@ -448,6 +1214,7 @@ Response:
 - **Email:** admin@example.com
 - **Password:** Admin@123
 - **Role:** Admin
+- **Access:** Full CRUD on Products, Categories, Orders, and Dashboard Statistics
 
 ## Project Structure
 

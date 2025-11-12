@@ -1,0 +1,134 @@
+@page
+@model Buildify.APIs.Areas.Admin.Pages.Products.CreateModel
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Admin/Dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/Admin/Products">Products</a></li>
+                    <li class="breadcrumb-item active">Create Product</li>
+                </ol>
+            </nav>
+            <h1 class="display-4">
+                <i class="bi bi-plus-circle"></i> Create New Product
+            </h1>
+            <p class="text-muted">Add a new product to your inventory</p>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Product Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="Product.Name" class="form-label">Product Name <span class="text-danger">*</span></label>
+                            <input asp-for="Product.Name" class="form-control" placeholder="Enter product name" />
+                            <span asp-validation-for="Product.Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Product.Description" class="form-label">Description</label>
+                            <textarea asp-for="Product.Description" class="form-control" rows="4" placeholder="Enter product description"></textarea>
+                            <span asp-validation-for="Product.Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Product.Price" class="form-label">Price ($) <span class="text-danger">*</span></label>
+                                <input asp-for="Product.Price" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                                <span asp-validation-for="Product.Price" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Product.Stock" class="form-label">Stock Quantity <span class="text-danger">*</span></label>
+                                <input asp-for="Product.Stock" type="number" class="form-control" placeholder="0" />
+                                <span asp-validation-for="Product.Stock" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Product.CategoryId" class="form-label">Category <span class="text-danger">*</span></label>
+                            <select asp-for="Product.CategoryId" class="form-select">
+                                <option value="">-- Select Category --</option>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Product.ImageUrl" class="form-label">Image URL</label>
+                            <input asp-for="Product.ImageUrl" class="form-control" placeholder="https://example.com/image.jpg" />
+                            <span asp-validation-for="Product.ImageUrl" class="text-danger"></span>
+                            <small class="form-text text-muted">Enter a valid image URL</small>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="/Admin/Products" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-save"></i> Create Product
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Tips</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <strong>Product Name:</strong> Use clear, descriptive names
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <strong>Price:</strong> Enter the price in USD
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <strong>Stock:</strong> Set initial inventory quantity
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <strong>Category:</strong> Choose the most relevant category
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <strong>Image:</strong> Use high-quality product images
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

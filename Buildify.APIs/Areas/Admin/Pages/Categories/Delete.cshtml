@@ -1,0 +1,192 @@
+@page "{id:int}"
+@model Buildify.APIs.Areas.Admin.Pages.Categories.DeleteModel
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Admin/Dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/Admin/Categories">Categories</a></li>
+                    <li class="breadcrumb-item active">Delete Category #@Model.Id</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 text-danger">
+                <i class="bi bi-trash"></i> Delete Category
+            </h1>
+            <p class="text-muted">Confirm category deletion</p>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Category != null)
+    {
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                @if (Model.ProductCount > 0)
+                {
+                    <!-- Cannot Delete Alert -->
+                    <div class="alert alert-danger border-danger" role="alert">
+                        <h4 class="alert-heading">
+                            <i class="bi bi-x-circle-fill"></i> Cannot Delete Category
+                        </h4>
+                        <p>This category cannot be deleted because it contains <strong>@Model.ProductCount product(s)</strong>.</p>
+                        <hr>
+                        <p class="mb-0">
+                            Please remove or reassign all products from this category before attempting to delete it.
+                        </p>
+                    </div>
+
+                    <!-- Category Details Card -->
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Category Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless mb-0">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 150px;"><i class="bi bi-hash"></i> ID:</th>
+                                        <td><strong>#@Model.Category.Id</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <th><i class="bi bi-tag"></i> Name:</th>
+                                        <td><strong class="fs-5">@Model.Category.Name</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <th><i class="bi bi-card-text"></i> Description:</th>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(Model.Category.Description))
+                                            {
+                                                @Model.Category.Description
+                                            }
+                                            else
+                                            {
+                                                <em class="text-muted">No description</em>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><i class="bi bi-box-seam"></i> Products:</th>
+                                        <td><span class="badge bg-danger fs-6">@Model.ProductCount product(s)</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <a href="/Admin/Categories" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Back to Categories
+                                </a>
+                                <a href="/Admin/Categories/Details/@Model.Id" class="btn btn-info">
+                                    <i class="bi bi-eye"></i> View Category Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <!-- Warning Alert -->
+                    <div class="alert alert-warning border-warning" role="alert">
+                        <h4 class="alert-heading">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Warning!
+                        </h4>
+                        <p>You are about to permanently delete this category. This action cannot be undone.</p>
+                        <hr>
+                        <p class="mb-0">Please review the category details below before confirming the deletion.</p>
+                    </div>
+
+                    <!-- Category Details Card -->
+                    <div class="card">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Category to be Deleted</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless mb-0">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 150px;"><i class="bi bi-hash"></i> ID:</th>
+                                        <td><strong>#@Model.Category.Id</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <th><i class="bi bi-tag"></i> Name:</th>
+                                        <td><strong class="fs-5">@Model.Category.Name</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <th><i class="bi bi-card-text"></i> Description:</th>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(Model.Category.Description))
+                                            {
+                                                @Model.Category.Description
+                                            }
+                                            else
+                                            {
+                                                <em class="text-muted">No description</em>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><i class="bi bi-box-seam"></i> Products:</th>
+                                        <td><span class="badge bg-success">No products</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Confirmation Card -->
+                    <div class="card mt-3 border-danger">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0"><i class="bi bi-question-circle"></i> Confirm Deletion</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-3">
+                                Are you absolutely sure you want to delete <strong>"@Model.Category.Name"</strong>?
+                            </p>
+                            <form method="post">
+                                <div class="d-flex justify-content-between">
+                                    <a href="/Admin/Categories" class="btn btn-secondary">
+                                        <i class="bi bi-x-circle"></i> Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash"></i> Yes, Delete Category
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div class="alert alert-info mt-3" role="alert">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Note:</strong> After deletion, you can go back to the categories list or create a new category.
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else if (string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading category details...</p>
+        </div>
+    }
+</div>

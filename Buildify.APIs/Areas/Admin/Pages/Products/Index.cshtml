@@ -1,0 +1,170 @@
+@page
+@model Buildify.APIs.Areas.Admin.Pages.Products.IndexModel
+@{
+    ViewData["Title"] = "Products Management";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4">
+                <i class="bi bi-box-seam"></i> Products Management
+            </h1>
+            <p class="text-muted">Manage your product inventory</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> <strong>Success!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Products Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="table-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-list-ul"></i> All Products
+                    </h4>
+                    <div>
+                        <span class="badge bg-primary me-2">Total: @Model.Products.Count</span>
+                        <button class="btn btn-success" onclick="window.location.href='/Admin/Products/Create'">
+                            <i class="bi bi-plus-circle"></i> Add New Product
+                        </button>
+                    </div>
+                </div>
+                
+                @if (Model.Products != null && Model.Products.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in Model.Products)
+                                {
+                                    <tr>
+                                        <td><strong>#@product.Id</strong></td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                            {
+                                                <img src="@product.ImageUrl" alt="@product.Name" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                            }
+                                            else
+                                            {
+                                                <div class="bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; border-radius: 4px;">
+                                                    <i class="bi bi-image text-muted"></i>
+                                                </div>
+                                            }
+                                        </td>
+                                        <td>
+                                            <strong>@product.Name</strong>
+                                            @if (!string.IsNullOrEmpty(product.Description) && product.Description.Length > 50)
+                                            {
+                                                <br><small class="text-muted">@product.Description.Substring(0, 50)...</small>
+                                            }
+                                            else if (!string.IsNullOrEmpty(product.Description))
+                                            {
+                                                <br><small class="text-muted">@product.Description</small>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">@product.CategoryName</span>
+                                        </td>
+                                        <td>
+                                            <strong class="text-success">$@product.Price.ToString("N2")</strong>
+                                        </td>
+                                        <td>
+                                            <strong class="@(product.Stock <= 10 ? (product.Stock == 0 ? "text-danger" : "text-warning") : "text-success")">
+                                                @product.Stock
+                                            </strong>
+                                        </td>
+                                        <td>
+                                            @if (product.Stock == 0)
+                                            {
+                                                <span class="badge bg-danger">
+                                                    <i class="bi bi-x-circle"></i> Out of Stock
+                                                </span>
+                                            }
+                                            else if (product.Stock <= 10)
+                                            {
+                                                <span class="badge bg-warning">
+                                                    <i class="bi bi-exclamation-triangle"></i> Low Stock
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-check-circle"></i> In Stock
+                                                </span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="/Admin/Products/Edit/@product.Id" class="btn btn-sm btn-primary" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="/Admin/Products/Details/@product.Id" class="btn btn-sm btn-info" title="Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete(@product.Id, '@product.Name')" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else if (string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> No products found. Start by adding your first product!
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(productId, productName) {
+            if (confirm(`Are you sure you want to delete "${productName}"?`)) {
+                window.location.href = `/Admin/Products/Delete/${productId}`;
+            }
+        }
+    </script>
+}

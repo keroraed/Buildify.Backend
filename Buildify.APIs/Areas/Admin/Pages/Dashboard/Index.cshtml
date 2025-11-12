@@ -1,0 +1,263 @@
+@page
+@model Buildify.APIs.Areas.Admin.Pages.Dashboard.IndexModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </h1>
+            <p class="text-muted">Welcome to the Buildify Admin Dashboard</p>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.DashboardStats != null)
+    {
+        <!-- Statistics Cards -->
+        <div class="row g-4 mb-4">
+            <!-- Total Orders Card -->
+            <div class="col-xl-3 col-md-6">
+                <div class="card stat-card border-0 bg-primary text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase mb-1 opacity-75">Total Orders</h6>
+                                <h2 class="mb-0 fw-bold">@Model.DashboardStats.TotalOrders</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="bi bi-cart-check"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Revenue Card -->
+            <div class="col-xl-3 col-md-6">
+                <div class="card stat-card border-0 bg-success text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase mb-1 opacity-75">Total Revenue</h6>
+                                <h2 class="mb-0 fw-bold">$@Model.DashboardStats.TotalRevenue.ToString("N2")</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="bi bi-currency-dollar"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Products Card -->
+            <div class="col-xl-3 col-md-6">
+                <div class="card stat-card border-0 bg-info text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase mb-1 opacity-75">Total Products</h6>
+                                <h2 class="mb-0 fw-bold">@Model.DashboardStats.TotalProducts</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Users Card -->
+            <div class="col-xl-3 col-md-6">
+                <div class="card stat-card border-0 bg-warning text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase mb-1 opacity-75">Total Users</h6>
+                                <h2 class="mb-0 fw-bold">@Model.DashboardStats.TotalUsers</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders Table -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="table-container">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="mb-0">
+                            <i class="bi bi-clock-history"></i> Recent Orders
+                        </h4>
+                        <span class="badge bg-primary">Last 10 Orders</span>
+                    </div>
+                    
+                    @if (Model.DashboardStats.RecentOrders != null && Model.DashboardStats.RecentOrders.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>User ID</th>
+                                        <th>Order Date</th>
+                                        <th>Total Price</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var order in Model.DashboardStats.RecentOrders)
+                                    {
+                                        <tr>
+                                            <td><strong>#@order.Id</strong></td>
+                                            <td>@order.UserId</td>
+                                            <td>
+                                                <i class="bi bi-calendar3"></i>
+                                                @order.OrderDate.ToString("MMM dd, yyyy")
+                                                <br>
+                                                <small class="text-muted">@order.OrderDate.ToString("hh:mm tt")</small>
+                                            </td>
+                                            <td>
+                                                <strong class="text-success">$@order.TotalPrice.ToString("N2")</strong>
+                                            </td>
+                                            <td>
+                                                @{
+                                                    var badgeClass = order.Status switch
+                                                    {
+                                                        "Pending" => "bg-warning",
+                                                        "Processing" => "bg-info",
+                                                        "Shipped" => "bg-primary",
+                                                        "Delivered" => "bg-success",
+                                                        "Cancelled" => "bg-danger",
+                                                        _ => "bg-secondary"
+                                                    };
+                                                }
+                                                <span class="badge @badgeClass">
+                                                    <i class="bi bi-circle-fill"></i> @order.Status
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> No recent orders found.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Products -->
+        <div class="row">
+            <div class="col-12">
+                <div class="table-container">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="mb-0">
+                            <i class="bi bi-exclamation-triangle text-danger"></i> Low Stock Products
+                        </h4>
+                        <span class="badge badge-stock-warning">Stock ≤ 10</span>
+                    </div>
+                    
+                    @if (Model.DashboardStats.LowStockProducts != null && Model.DashboardStats.LowStockProducts.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Product ID</th>
+                                        <th>Product Name</th>
+                                        <th>Category</th>
+                                        <th>Stock</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var product in Model.DashboardStats.LowStockProducts)
+                                    {
+                                        <tr>
+                                            <td><strong>#@product.Id</strong></td>
+                                            <td>
+                                                <i class="bi bi-box"></i> @product.Name
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary">@product.CategoryName</span>
+                                            </td>
+                                            <td>
+                                                <strong class="@(product.Stock <= 5 ? "text-danger" : "text-warning")">
+                                                    @product.Stock units
+                                                </strong>
+                                            </td>
+                                            <td>
+                                                @if (product.Stock == 0)
+                                                {
+                                                    <span class="badge bg-danger">
+                                                        <i class="bi bi-x-circle"></i> Out of Stock
+                                                    </span>
+                                                }
+                                                else if (product.Stock <= 5)
+                                                {
+                                                    <span class="badge bg-danger">
+                                                        <i class="bi bi-exclamation-triangle"></i> Critical
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning">
+                                                        <i class="bi bi-exclamation-circle"></i> Low Stock
+                                                    </span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle"></i> All products have sufficient stock levels.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else if (string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading dashboard data...</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-refresh dashboard every 5 minutes
+        setTimeout(function() {
+            location.reload();
+        }, 300000);
+    </script>
+}

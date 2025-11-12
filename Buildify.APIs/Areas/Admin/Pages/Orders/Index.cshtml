@@ -1,0 +1,193 @@
+@page
+@model Buildify.APIs.Areas.Admin.Pages.Orders.IndexModel
+@{
+    ViewData["Title"] = "Orders Management";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4">
+                <i class="bi bi-cart-check"></i> Orders Management
+            </h1>
+            <p class="text-muted">Manage and track customer orders</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> <strong>Success!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter and Stats -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <form method="get" class="row g-2">
+                                <div class="col-auto">
+                                    <label class="col-form-label">Filter by Status:</label>
+                                </div>
+                                <div class="col-auto">
+                                    <select name="statusFilter" class="form-select" onchange="this.form.submit()">
+                                        <option value="">All Orders</option>
+                                        <option value="Pending" selected="@(Model.StatusFilter == "Pending")">Pending</option>
+                                        <option value="Processing" selected="@(Model.StatusFilter == "Processing")">Processing</option>
+                                        <option value="Shipped" selected="@(Model.StatusFilter == "Shipped")">Shipped</option>
+                                        <option value="Delivered" selected="@(Model.StatusFilter == "Delivered")">Delivered</option>
+                                        <option value="Cancelled" selected="@(Model.StatusFilter == "Cancelled")">Cancelled</option>
+                                    </select>
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.StatusFilter))
+                                {
+                                    <div class="col-auto">
+                                        <a href="/Admin/Orders" class="btn btn-outline-secondary">Clear Filter</a>
+                                    </div>
+                                }
+                            </form>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <h5 class="mb-0">
+                                <span class="badge bg-primary">Total Orders: @Model.Orders.Count</span>
+                                @if (Model.Orders.Any())
+                                {
+                                    <span class="badge bg-success">Total Revenue: $@Model.Orders.Sum(o => o.TotalPrice).ToString("N2")</span>
+                                }
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="table-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-list-ul"></i> 
+                        @if (!string.IsNullOrEmpty(Model.StatusFilter))
+                        {
+                            <span>@Model.StatusFilter Orders</span>
+                        }
+                        else
+                        {
+                            <span>All Orders</span>
+                        }
+                    </h4>
+                </div>
+                
+                @if (Model.Orders != null && Model.Orders.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Order Date</th>
+                                    <th>Items</th>
+                                    <th>Total Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model.Orders.OrderByDescending(o => o.OrderDate))
+                                {
+                                    <tr>
+                                        <td><strong>#@order.Id</strong></td>
+                                        <td>
+                                            <div>
+                                                <strong>@order.ShippingAddress.FirstName @order.ShippingAddress.LastName</strong>
+                                            </div>
+                                            <small class="text-muted">User ID: @order.UserId</small>
+                                        </td>
+                                        <td>
+                                            <i class="bi bi-calendar3"></i>
+                                            @order.OrderDate.ToString("MMM dd, yyyy")
+                                            <br>
+                                            <small class="text-muted">@order.OrderDate.ToString("hh:mm tt")</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">@order.OrderItems.Count item(s)</span>
+                                        </td>
+                                        <td>
+                                            <strong class="text-success fs-6">$@order.TotalPrice.ToString("N2")</strong>
+                                        </td>
+                                        <td>
+                                            @{
+                                                var badgeClass = order.Status switch
+                                                {
+                                                    "Pending" => "bg-warning",
+                                                    "Processing" => "bg-info",
+                                                    "Shipped" => "bg-primary",
+                                                    "Delivered" => "bg-success",
+                                                    "Cancelled" => "bg-danger",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge @badgeClass">
+                                                <i class="bi bi-circle-fill"></i> @order.Status
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="/Admin/Orders/Details/@order.Id" class="btn btn-sm btn-info" title="Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                @if (order.Status != "Delivered" && order.Status != "Cancelled")
+                                                {
+                                                    <a href="/Admin/Orders/UpdateStatus/@order.Id" class="btn btn-sm btn-primary" title="Update Status">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else if (string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 
+                        @if (!string.IsNullOrEmpty(Model.StatusFilter))
+                        {
+                            <span>No @Model.StatusFilter.ToLower() orders found.</span>
+                        }
+                        else
+                        {
+                            <span>No orders found.</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
