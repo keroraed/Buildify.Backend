@@ -23,7 +23,6 @@ namespace Buildify.Core.DTOs
         public int CategoryId { get; set; }
 
         [MaxLength(500, ErrorMessage = "Image URL cannot exceed 500 characters")]
-        [Url(ErrorMessage = "Please provide a valid URL")]
         public string? ImageUrl { get; set; }
     }
 }

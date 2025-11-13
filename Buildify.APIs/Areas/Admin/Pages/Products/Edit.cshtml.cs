@@ -11,21 +11,27 @@ namespace Buildify.APIs.Areas.Admin.Pages.Products
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<EditModel> _logger;
+        private readonly IWebHostEnvironment _environment;
 
-        public EditModel(IHttpClientFactory httpClientFactory, ILogger<EditModel> logger)
+        public EditModel(IHttpClientFactory httpClientFactory, ILogger<EditModel> logger, IWebHostEnvironment environment)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+            _environment = environment;
         }
 
         [BindProperty]
         public UpdateProductDto Product { get; set; } = new();
+
+        [BindProperty]
+        public IFormFile? ImageFile { get; set; }
         
         [BindProperty(SupportsGet = true)]
         public int Id { get; set; }
         
         public List<CategoryDto> Categories { get; set; } = new();
         public string? ErrorMessage { get; set; }
+        public string? CurrentImageUrl { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -64,6 +70,28 @@ namespace Buildify.APIs.Areas.Admin.Pages.Products
 
             try
             {
+                // Handle image upload if provided
+                if (ImageFile != null && ImageFile.Length > 0)
+                {
+                    var uploadResult = await UploadImageAsync(ImageFile);
+                    if (uploadResult.Success)
+                    {
+                        // Delete old image if it exists and is a local file
+                        if (!string.IsNullOrEmpty(Product.ImageUrl) && Product.ImageUrl.StartsWith("/images/"))
+                        {
+                            DeleteOldImage(Product.ImageUrl);
+                        }
+                        
+                        Product.ImageUrl = uploadResult.ImagePath;
+                    }
+                    else
+                    {
+                        ErrorMessage = uploadResult.ErrorMessage;
+                        await LoadCategories(token);
+                        return Page();
+                    }
+                }
+
                 var httpClient = _httpClientFactory.CreateClient();
                 var baseUrl = $"{Request.Scheme}://{Request.Host}";
                 
@@ -133,6 +161,7 @@ namespace Buildify.APIs.Areas.Admin.Pages.Products
                             CategoryId = productDto.CategoryId,
                             ImageUrl = productDto.ImageUrl
                         };
+                        CurrentImageUrl = productDto.ImageUrl;
                     }
                 }
                 else
@@ -176,6 +205,71 @@ namespace Buildify.APIs.Areas.Admin.Pages.Products
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error loading categories");
+            }
+        }
+
+        private async Task<(bool Success, string? ImagePath, string? ErrorMessage)> UploadImageAsync(IFormFile imageFile)
+        {
+            try
+            {
+                // Validate file type
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                var fileExtension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+                
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    return (false, null, "Invalid file type. Only JPG, PNG, GIF, and WEBP images are allowed.");
+                }
+
+                // Validate file size (max 5MB)
+                if (imageFile.Length > 5 * 1024 * 1024)
+                {
+                    return (false, null, "File size exceeds 5MB limit.");
+                }
+
+                // Create unique filename
+                var fileName = $"{Guid.NewGuid()}{fileExtension}";
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "images", "products");
+                
+                // Create directory if it doesn't exist
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                // Save file
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(fileStream);
+                }
+
+                // Return relative path for database
+                var relativePath = $"/images/products/{fileName}";
+                return (true, relativePath, null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading image");
+                return (false, null, "An error occurred while uploading the image.");
+            }
+        }
+
+        private void DeleteOldImage(string imagePath)
+        {
+            try
+            {
+                var filePath = Path.Combine(_environment.WebRootPath, imagePath.TrimStart('/'));
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                    _logger.LogInformation("Deleted old image: {FilePath}", filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to delete old image: {ImagePath}", imagePath);
             }
         }
     }

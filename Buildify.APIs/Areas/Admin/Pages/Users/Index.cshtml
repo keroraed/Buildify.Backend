@@ -1,0 +1,254 @@
+@page
+@model Buildify.APIs.Areas.Admin.Pages.Users.IndexModel
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4">
+                <i class="bi bi-people"></i> User Management
+            </h1>
+            <p class="text-muted">Manage registered users and their accounts</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> <strong>Success!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error!</strong> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- User Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card card bg-primary text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase mb-1">Total Users</h6>
+                        <h3 class="mb-0">@Model.Users.Count</h3>
+                    </div>
+                    <i class="bi bi-people stat-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card card bg-success text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase mb-1">Verified Users</h6>
+                        <h3 class="mb-0">@Model.Users.Count(u => u.EmailConfirmed)</h3>
+                    </div>
+                    <i class="bi bi-shield-check stat-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card card bg-warning text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase mb-1">Pending Verification</h6>
+                        <h3 class="mb-0">@Model.Users.Count(u => !u.EmailConfirmed)</h3>
+                    </div>
+                    <i class="bi bi-hourglass-split stat-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card card bg-info text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase mb-1">Active Today</h6>
+                        <h3 class="mb-0">@Model.Users.Count(u => u.LastLoginDate.HasValue && u.LastLoginDate.Value.Date == DateTime.UtcNow.Date)</h3>
+                    </div>
+                    <i class="bi bi-clock-history stat-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="table-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-list-ul"></i> All Users
+                    </h4>
+                    <div>
+                        <div class="input-group" style="width: 300px;">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control" id="searchInput" placeholder="Search users...">
+                        </div>
+                    </div>
+                </div>
+                
+                @if (Model.Users != null && Model.Users.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="usersTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Display Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                    <th>Registered</th>
+                                    <th>Last Login</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model.Users)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle me-2">
+                                                    @if (!string.IsNullOrEmpty(user.DisplayName))
+                                                    {
+                                                        @user.DisplayName.Substring(0, 1).ToUpper()
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="bi bi-person"></i>
+                                                    }
+                                                </div>
+                                                <strong>@(user.DisplayName ?? "N/A")</strong>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <i class="bi bi-envelope me-1"></i>
+                                            @user.Email
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(user.PhoneNumber))
+                                            {
+                                                <i class="bi bi-telephone me-1"></i>
+                                                @user.PhoneNumber
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (user.EmailConfirmed)
+                                            {
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-check-circle"></i> Verified
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning">
+                                                    <i class="bi bi-exclamation-circle"></i> Pending
+                                                </span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                <i class="bi bi-calendar"></i>
+                                                @user.DateCreated.ToString("MMM dd, yyyy")
+                                            </small>
+                                        </td>
+                                        <td>
+                                            @if (user.LastLoginDate.HasValue)
+                                            {
+                                                <small class="text-muted">
+                                                    <i class="bi bi-clock"></i>
+                                                    @user.LastLoginDate.Value.ToString("MMM dd, yyyy")
+                                                </small>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Never</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="/Admin/Users/Details/@user.Id" class="btn btn-sm btn-info" title="View Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-warning" onclick="editUser('@user.Id')" title="Edit User">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('@user.Id', '@user.Email')" title="Delete User">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else if (string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> No users found in the system.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF6B35 0%, #FFA500 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+    </style>
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#usersTable tbody tr');
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchValue) ? '' : 'none';
+            });
+        });
+
+        function confirmDelete(userId, userEmail) {
+            if (confirm(`Are you sure you want to delete user "${userEmail}"?\n\nThis action cannot be undone and will remove all user data.`)) {
+                window.location.href = `/Admin/Users/Delete/${userId}`;
+            }
+        }
+
+        function editUser(userId) {
+            window.location.href = `/Admin/Users/Edit/${userId}`;
+        }
+    </script>
+}

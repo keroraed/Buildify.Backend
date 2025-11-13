@@ -1,0 +1,253 @@
+@page "{id}"
+@model Buildify.APIs.Areas.Admin.Pages.Users.DetailsModel
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Admin/Dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/Admin/Users">Users</a></li>
+                    <li class="breadcrumb-item active">User Details</li>
+                </ol>
+            </nav>
+            <h1 class="display-5">
+                <i class="bi bi-person-badge"></i> User Details
+            </h1>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.User != null)
+    {
+        <div class="row">
+            <!-- User Information Card -->
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body text-center">
+                        <div class="user-avatar-large mb-3">
+                            @if (!string.IsNullOrEmpty(Model.User.DisplayName))
+                            {
+                                @Model.User.DisplayName.Substring(0, 1).ToUpper()
+                            }
+                            else
+                            {
+                                <i class="bi bi-person"></i>
+                            }
+                        </div>
+                        <h4>@(Model.User.DisplayName ?? "No Name")</h4>
+                        <p class="text-muted">@Model.User.Email</p>
+                        
+                        @if (Model.User.EmailConfirmed)
+                        {
+                            <span class="badge bg-success mb-2">
+                                <i class="bi bi-check-circle"></i> Email Verified
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning mb-2">
+                                <i class="bi bi-exclamation-circle"></i> Email Not Verified
+                            </span>
+                        }
+
+                        <div class="mt-3">
+                            <a href="/Admin/Users/Edit/@Model.User.Id" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil"></i> Edit User
+                            </a>
+                            <button class="btn btn-danger btn-sm" onclick="confirmDelete('@Model.User.Id', '@Model.User.Email')">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Information -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0"><i class="bi bi-info-circle"></i> Account Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <small class="text-muted d-block">User ID</small>
+                            <strong>@Model.User.Id</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Username</small>
+                            <strong>@(Model.User.UserName ?? "N/A")</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Phone Number</small>
+                            <strong>@(Model.User.PhoneNumber ?? "Not provided")</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Phone Verified</small>
+                            @if (Model.User.PhoneNumberConfirmed)
+                            {
+                                <span class="badge bg-success">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">No</span>
+                            }
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Registration Date</small>
+                            <strong>@Model.User.DateCreated.ToString("MMMM dd, yyyy")</strong>
+                            <br><small class="text-muted">@Model.User.DateCreated.ToString("hh:mm tt")</small>
+                        </div>
+                        <div class="mb-0">
+                            <small class="text-muted d-block">Last Login</small>
+                            @if (Model.User.LastLoginDate.HasValue)
+                            {
+                                <strong>@Model.User.LastLoginDate.Value.ToString("MMMM dd, yyyy")</strong>
+                                <br><small class="text-muted">@Model.User.LastLoginDate.Value.ToString("hh:mm tt")</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Never logged in</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Addresses and Activity -->
+            <div class="col-md-8">
+                <!-- Addresses Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">
+                            <i class="bi bi-geo-alt"></i> Addresses (@Model.Addresses.Count)
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Addresses.Any())
+                        {
+                            <div class="row">
+                                @foreach (var address in Model.Addresses)
+                                {
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card border">
+                                            <div class="card-body">
+                                                <h6 class="card-title">
+                                                    <i class="bi bi-house-door"></i>
+                                                    @address.Street
+                                                </h6>
+                                                <p class="mb-1">
+                                                    <i class="bi bi-building"></i> @address.City
+                                                </p>
+                                                <p class="mb-1">
+                                                    <i class="bi bi-map"></i> @address.State, @address.ZipCode
+                                                </p>
+                                                <p class="mb-0">
+                                                    <i class="bi bi-globe"></i> @address.Country
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-info-circle"></i> No addresses added yet.
+                            </p>
+                        }
+                    </div>
+                </div>
+
+                <!-- Activity Stats -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-warning text-white">
+                        <h6 class="mb-0">
+                            <i class="bi bi-activity"></i> User Activity
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3 border rounded">
+                                    <i class="bi bi-cart-check display-6 text-primary"></i>
+                                    <h4 class="mt-2">@Model.OrderCount</h4>
+                                    <small class="text-muted">Total Orders</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3 border rounded">
+                                    <i class="bi bi-geo-alt display-6 text-info"></i>
+                                    <h4 class="mt-2">@Model.Addresses.Count</h4>
+                                    <small class="text-muted">Saved Addresses</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3 border rounded">
+                                    <i class="bi bi-clock-history display-6 text-success"></i>
+                                    <h4 class="mt-2">@((DateTime.UtcNow - Model.User.DateCreated).Days)</h4>
+                                    <small class="text-muted">Days Active</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Device Information -->
+                @if (!string.IsNullOrEmpty(Model.User.FcmDeviceToken))
+                {
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-secondary text-white">
+                            <h6 class="mb-0">
+                                <i class="bi bi-phone"></i> Device Information
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">
+                                <strong>FCM Token:</strong>
+                                <code class="d-block mt-1" style="font-size: 0.8rem; word-break: break-all;">
+                                    @Model.User.FcmDeviceToken
+                                </code>
+                            </p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <style>
+        .user-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF6B35 0%, #FFA500 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 3rem;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+    </style>
+    <script>
+        function confirmDelete(userId, userEmail) {
+            if (confirm(`Are you sure you want to delete user "${userEmail}"?\n\nThis action cannot be undone.`)) {
+                window.location.href = `/Admin/Users/Delete/${userId}`;
+            }
+        }
+    </script>
+}

@@ -8,9 +8,11 @@
 <div class="login-container">
     <div class="login-card">
         <div class="text-center mb-4">
-            <i class="bi bi-building login-icon"></i>
-            <h2 class="fw-bold">Buildify Admin</h2>
-            <p class="text-muted">Sign in to continue to dashboard</p>
+            <i class="bi bi-hammer login-icon"></i>
+            <h2 class="fw-bold">BUILDIFY</h2>
+            <div class="construction-accent"></div>
+            <p class="buildify-subtitle">Construction Materials Portal</p>
+            <p class="text-muted">Admin Dashboard Login</p>
         </div>
 
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
@@ -58,14 +60,14 @@
 
             <div class="d-grid mb-3">
                 <button type="submit" class="btn btn-primary btn-lg">
-                    <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    <i class="bi bi-tools"></i> Access Dashboard
                 </button>
             </div>
 
-            <div class="text-center text-muted">
+            <div class="text-center security-badge">
                 <small>
-                    <i class="bi bi-shield-check"></i> 
-                    Secure login with encrypted credentials
+                    <i class="bi bi-shield-lock-fill"></i> 
+                    Secure SSL Encrypted Connection
                 </small>
             </div>
         </form>

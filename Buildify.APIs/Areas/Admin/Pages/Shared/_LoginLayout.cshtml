@@ -7,33 +7,72 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
+        :root {
+            --buildify-orange: #FF6B35;
+            --buildify-dark: #2C3E50;
+            --buildify-yellow: #FFA500;
+            --buildify-gray: #95A5A6;
+            --buildify-light: #ECF0F1;
+        }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2C3E50 0%, #34495E 50%, #5D6D7E 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Construction pattern overlay */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 107, 53, 0.03) 10px, rgba(255, 107, 53, 0.03) 20px),
+                repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255, 165, 0, 0.03) 10px, rgba(255, 165, 0, 0.03) 20px);
+            pointer-events: none;
         }
         
         .login-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 480px;
             padding: 20px;
+            position: relative;
+            z-index: 1;
         }
         
         .login-card {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            padding: 40px;
-            animation: slideIn 0.5s ease-out;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            padding: 45px;
+            animation: slideIn 0.6s ease-out;
+            border-top: 5px solid var(--buildify-orange);
+            position: relative;
+        }
+
+        /* Buildify brand stripe */
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--buildify-orange) 0%, var(--buildify-yellow) 100%);
         }
         
         @@keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateY(-30px);
             }
             to {
                 opacity: 1;
@@ -42,38 +81,124 @@
         }
         
         .login-icon {
-            font-size: 4rem;
-            color: #667eea;
+            font-size: 5rem;
+            background: linear-gradient(135deg, var(--buildify-orange) 0%, var(--buildify-yellow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 10px;
+            filter: drop-shadow(0 2px 4px rgba(255, 107, 53, 0.3));
+        }
+
+        h2.fw-bold {
+            color: var(--buildify-dark);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .buildify-subtitle {
+            color: var(--buildify-orange);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
+        .form-label {
+            color: var(--buildify-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-label i {
+            color: var(--buildify-orange);
+        }
+
+        .form-control {
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
         .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+            border-color: var(--buildify-orange);
+            box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.15);
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--buildify-orange) 0%, var(--buildify-yellow) 100%);
             border: none;
-            padding: 12px;
-            font-weight: 600;
-            transition: transform 0.2s;
+            padding: 14px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            background: linear-gradient(135deg, #FF7B45 0%, #FFB520 100%);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
         }
         
         .credential-box {
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFE8CC 100%);
             border-radius: 10px;
-            padding: 15px;
-            border-left: 4px solid #667eea;
+            padding: 18px;
+            border-left: 5px solid var(--buildify-orange);
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.1);
+        }
+
+        .credential-box strong {
+            color: var(--buildify-dark);
         }
         
         .alert {
             border-radius: 10px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-danger {
+            background-color: #FFF5F5;
+            color: #c0392b;
+            border-color: #dc3545;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--buildify-orange);
+            border-color: var(--buildify-orange);
+        }
+
+        .security-badge {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 3px solid #4CAF50;
+        }
+
+        .security-badge i {
+            color: #4CAF50;
+        }
+
+        hr {
+            margin: 30px 0;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .construction-accent {
+            display: inline-block;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--buildify-orange) 0%, var(--buildify-yellow) 100%);
+            margin: 10px auto;
+            border-radius: 2px;
         }
     </style>
 </head>
