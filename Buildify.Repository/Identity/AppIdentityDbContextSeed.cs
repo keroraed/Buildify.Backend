@@ -13,6 +13,17 @@ public class AppIdentityDbContextSeed
             await roleManager.CreateAsync(new IdentityRole("Admin"));
         }
 
+        if (!await roleManager.RoleExistsAsync("Seller"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("Seller"));
+        }
+
+        if (!await roleManager.RoleExistsAsync("Buyer"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("Buyer"));
+        }
+
+        // Keep legacy "User" role for backward compatibility
         if (!await roleManager.RoleExistsAsync("User"))
         {
             await roleManager.CreateAsync(new IdentityRole("User"));

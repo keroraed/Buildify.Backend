@@ -4,6 +4,43 @@ Base URL: `https://localhost:7101/api`
 
 ---
 
+## 🎭 User Roles & Permissions
+
+The Buildify platform implements a three-tier role system:
+
+### **Admin**
+- Full system management and oversight
+- Manage products, categories, orders, and users
+- Access to dashboard statistics
+- **Default Account:** `admin@example.com` / `Admin@123`
+
+### **Seller**
+- Product inventory management
+- Order fulfillment and management
+- Access to dashboard statistics
+- Can also shop as a buyer
+- **Registration:** Select "Seller" during registration
+
+### **Buyer** (Default)
+- Browse and purchase products
+- Manage cart and orders
+- Manage profile and addresses
+- **Registration:** Select "Buyer" during registration (or default)
+
+### Role-Based Access Summary
+
+| Feature | Admin | Seller | Buyer | Public |
+|---------|-------|--------|-------|--------|
+| View Products/Categories | ✅ | ✅ | ✅ | ✅ |
+| Create/Edit/Delete Products | ✅ | ✅ | ❌ | ❌ |
+| Manage Categories | ✅ | ❌ | ❌ | ❌ |
+| Shopping & Cart | ✅ | ✅ | ✅ | ❌ |
+| View All Orders | ✅ | ✅ | ❌ | ❌ |
+| Update Order Status | ✅ | ✅ | ❌ | ❌ |
+| Dashboard Access | ✅ | ✅ | ❌ | ❌ |
+
+---
+
 ## 📦 Products Endpoints
 
 ### 1. Get All Products
@@ -118,10 +155,10 @@ Base URL: `https://localhost:7101/api`
 
 ---
 
-### 4. Create Product (Admin Only)
+### 4. Create Product (Admin/Seller Only)
 **POST** `/api/products`
 
-**Authorization:** Bearer Token (Admin role required)
+**Authorization:** Bearer Token (Admin or Seller role required)
 
 **Request Body:**
 ```json
@@ -160,12 +197,12 @@ Base URL: `https://localhost:7101/api`
 
 ---
 
-### 5. Update Product (Admin Only)
+### 5. Update Product (Admin/Seller Only)
 **PUT** `/api/products/{id}`
 
 **Example:** `/api/products/15`
 
-**Authorization:** Bearer Token (Admin role required)
+**Authorization:** Bearer Token (Admin or Seller role required)
 
 **Request Body:**
 ```json
@@ -204,12 +241,12 @@ Base URL: `https://localhost:7101/api`
 
 ---
 
-### 6. Delete Product (Admin Only)
+### 6. Delete Product (Admin/Seller Only)
 **DELETE** `/api/products/{id}`
 
 **Example:** `/api/products/15`
 
-**Authorization:** Bearer Token (Admin role required)
+**Authorization:** Bearer Token (Admin or Seller role required)
 
 **Response (200 OK):**
 ```json
@@ -815,10 +852,10 @@ Base URL: `https://localhost:7101/api`
 
 ---
 
-### 4. Get All Orders (Admin Only)
+### 4. Get All Orders (Admin/Seller Only)
 **GET** `/api/orders/admin`
 
-**Authorization:** Bearer Token (Admin role required)
+**Authorization:** Bearer Token (Admin or Seller role required)
 
 **Response:**
 ```json
@@ -893,12 +930,12 @@ Base URL: `https://localhost:7101/api`
 
 ---
 
-### 5. Update Order Status (Admin Only)
+### 5. Update Order Status (Admin/Seller Only)
 **PUT** `/api/orders/{id}/status`
 
 **Example:** `/api/orders/48/status`
 
-**Authorization:** Bearer Token (Admin role required)
+**Authorization:** Bearer Token (Admin or Seller role required)
 
 **Request Body:**
 ```json
@@ -956,12 +993,12 @@ Base URL: `https://localhost:7101/api`
 
 ---
 
-## 📊 Dashboard Endpoints (Admin Only)
+## 📊 Dashboard Endpoints (Admin/Seller Only)
 
 ### Get Dashboard Statistics
 **GET** `/api/dashboard/stats`
 
-**Authorization:** Bearer Token (Admin role required)
+**Authorization:** Bearer Token (Admin or Seller role required)
 
 **Response:**
 ```json

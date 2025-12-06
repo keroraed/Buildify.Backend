@@ -157,11 +157,69 @@ dotnet run
 
 The application will:
 - Automatically apply migrations
-- Seed default roles (Admin, User)
+- Seed default roles (Admin, Seller, Buyer, User)
 - Seed admin user (admin@example.com / Admin@123) with verified email
 - Start listening on https://localhost:7101 and http://localhost:7100
 
 **Note:** New users must verify their email address before they can login. An OTP will be sent to their email upon registration.
+
+## User Roles & Permissions
+
+The application implements a three-tier role-based authorization system:
+
+### 1. **Admin** Role
+- Full system access and management capabilities
+- **Products**: Create, Edit, Delete products
+- **Categories**: Create, Edit, Delete categories
+- **Orders**: View all orders from all users, Update order status
+- **Dashboard**: Access to system-wide statistics and reports
+- **Users**: Can view and manage all user data
+
+**Default Admin Account:**
+- Email: `admin@example.com`
+- Password: `Admin@123`
+
+### 2. **Seller** Role
+- Product and order management capabilities
+- **Products**: Create, Edit, Delete products (manage their inventory)
+- **Orders**: View all orders, Update order status (fulfill orders)
+- **Dashboard**: Access to statistics and reports
+- **Shopping**: Can also place orders as a buyer
+
+**Registration:** Users can register as Seller by selecting "Seller" role during registration.
+
+### 3. **Buyer** Role (Default)
+- Standard customer/end-user access
+- **Shopping**: Browse products, add to cart, place orders
+- **Profile**: Manage own profile and addresses
+- **Orders**: View own orders only
+- **Cart**: Full cart management
+
+**Registration:** Users register as Buyer by default or by selecting "Buyer" role during registration.
+
+## Authorization Matrix
+
+| Feature | Public | Buyer | Seller | Admin |
+|---------|--------|-------|--------|-------|
+| **Products** |
+| View Products/Categories | ✅ | ✅ | ✅ | ✅ |
+| Create/Edit/Delete Products | ❌ | ❌ | ✅ | ✅ |
+| **Categories** |
+| View Categories | ✅ | ✅ | ✅ | ✅ |
+| Create/Edit/Delete Categories | ❌ | ❌ | ❌ | ✅ |
+| **Account** |
+| Register/Login/Password Reset | ✅ | N/A | N/A | N/A |
+| Manage Own Profile | ❌ | ✅ | ✅ | ✅ |
+| Manage Own Addresses | ❌ | ✅ | ✅ | ✅ |
+| **Shopping** |
+| Shopping Cart | ❌ | ✅ | ✅ | ✅ |
+| Create Orders | ❌ | ✅ | ✅ | ✅ |
+| View Own Orders | ❌ | ✅ | ✅ | ✅ |
+| **Order Management** |
+| View All Orders | ❌ | ❌ | ✅ | ✅ |
+| Update Order Status | ❌ | ❌ | ✅ | ✅ |
+| **Dashboard** |
+| View Dashboard Statistics | ❌ | ❌ | ✅ | ✅ |
 
 ### 7. Access Swagger UI
 
@@ -176,9 +234,9 @@ Navigate to: https://localhost:7101/swagger
 | GET | `/api/products` | Get all products with categories | No |
 | GET | `/api/products/{id}` | Get single product by ID | No |
 | GET | `/api/products/category/{categoryId}` | Get products by category | No |
-| POST | `/api/products` | Create new product | Yes (Admin) |
-| PUT | `/api/products/{id}` | Update product | Yes (Admin) |
-| DELETE | `/api/products/{id}` | Delete product | Yes (Admin) |
+| POST | `/api/products` | Create new product | Yes (Admin, Seller) |
+| PUT | `/api/products/{id}` | Update product | Yes (Admin, Seller) |
+| DELETE | `/api/products/{id}` | Delete product | Yes (Admin, Seller) |
 
 ### Categories
 
@@ -207,14 +265,14 @@ Navigate to: https://localhost:7101/swagger
 | GET | `/api/orders` | Get current user's orders | Yes |
 | GET | `/api/orders/{id}` | Get single order details | Yes |
 | POST | `/api/orders` | Create order from cart | Yes |
-| GET | `/api/orders/admin` | Get all orders | Yes (Admin) |
-| PUT | `/api/orders/{id}/status` | Update order status | Yes (Admin) |
+| GET | `/api/orders/admin` | Get all orders | Yes (Admin, Seller) |
+| PUT | `/api/orders/{id}/status` | Update order status | Yes (Admin, Seller) |
 
-### Dashboard (Admin Only)
+### Dashboard
 
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
-| GET | `/api/dashboard/stats` | Get dashboard statistics | Yes (Admin) |
+| GET | `/api/dashboard/stats` | Get dashboard statistics | Yes (Admin, Seller) |
 
 ### Account Management
 
@@ -301,10 +359,10 @@ Response:
 ]
 ```
 
-4. **Create Product (Admin Only):**
+4. **Create Product (Admin/Seller Only):**
 ```json
 POST /api/products
-Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+Authorization: Bearer YOUR_ADMIN_OR_SELLER_JWT_TOKEN
 Content-Type: application/json
 
 {
@@ -330,10 +388,10 @@ Response:
 }
 ```
 
-5. **Update Product (Admin Only):**
+5. **Update Product (Admin/Seller Only):**
 ```json
 PUT /api/products/1
-Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+Authorization: Bearer YOUR_ADMIN_OR_SELLER_JWT_TOKEN
 Content-Type: application/json
 
 {
@@ -359,10 +417,10 @@ Response:
 }
 ```
 
-6. **Delete Product (Admin Only):**
+6. **Delete Product (Admin/Seller Only):**
 ```json
 DELETE /api/products/1
-Authorization: Bearer YOUR_ADMIN_JWT_TOKEN
+Authorization: Bearer YOUR_ADMIN_OR_SELLER_JWT_TOKEN
 
 Response:
 {
@@ -932,16 +990,17 @@ Features:
 
 ### Example: Registration & Email Verification Flow
 
-1. **Register a New User:**
+1. **Register a New User (as Buyer - Default):**
 ```json
 POST /api/account/register
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "email": "buyer@example.com",
   "displayName": "John Doe",
   "phoneNumber": "1234567890",
-  "password": "Password123"
+  "password": "Password123",
+  "role": "Buyer"
 }
 
 Response:
@@ -951,7 +1010,29 @@ Response:
 }
 ```
 
-2. **Check Email for OTP** (6-digit code sent to user@example.com)
+**Or Register as Seller:**
+```json
+POST /api/account/register
+Content-Type: application/json
+
+{
+  "email": "seller@example.com",
+  "displayName": "Jane Smith",
+  "phoneNumber": "0987654321",
+  "password": "Password123",
+  "role": "Seller"
+}
+
+Response:
+{
+  "statusCode": 200,
+  "message": "Registration successful. Please check your email to verify your account."
+}
+```
+
+**Note:** Valid roles are "Buyer" and "Seller". If no role or invalid role is provided, "Buyer" is assigned by default.
+
+2. **Check Email for OTP** (6-digit code sent to the registered email)
 
 3. **Verify Email:**
 ```json
@@ -959,7 +1040,7 @@ POST /api/account/verify-email
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "email": "buyer@example.com",
   "otpCode": "123456"
 }
 

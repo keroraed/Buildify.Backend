@@ -66,10 +66,10 @@ namespace Buildify.APIs.Controllers
         }
 
         /// <summary>
-        /// Create a new product (Admin only)
+        /// Create a new product (Admin and Seller only)
         /// </summary>
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Seller")]
         public async Task<ActionResult<ProductDto>> CreateProduct(CreateProductDto createProductDto)
         {
             // Check if category exists
@@ -95,10 +95,10 @@ namespace Buildify.APIs.Controllers
         }
 
         /// <summary>
-        /// Update an existing product (Admin only)
+        /// Update an existing product (Admin and Seller only)
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Seller")]
         public async Task<ActionResult<ProductDto>> UpdateProduct(int id, UpdateProductDto updateProductDto)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
@@ -128,10 +128,10 @@ namespace Buildify.APIs.Controllers
         }
 
         /// <summary>
-        /// Delete a product (Admin only)
+        /// Delete a product (Admin and Seller only)
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Seller")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);

@@ -69,8 +69,13 @@ public class AccountController : BaseApiController
             return BadRequest(new ApiResponse(400, string.Join(", ", result.Errors.Select(e => e.Description))));
         }
 
-        // Assign default "User" role
-        await _userManager.AddToRoleAsync(user, "User");
+        // Validate and assign role (Buyer or Seller)
+        var validRoles = new[] { "Buyer", "Seller" };
+        var roleToAssign = validRoles.Contains(registerDto.Role, StringComparer.OrdinalIgnoreCase) 
+            ? registerDto.Role 
+            : "Buyer"; // Default to Buyer if invalid role
+
+        await _userManager.AddToRoleAsync(user, roleToAssign);
 
         // Generate and send email verification OTP
         await _otpRepository.InvalidateAllOtpsByEmailAsync(registerDto.Email, OtpPurpose.EmailVerification);

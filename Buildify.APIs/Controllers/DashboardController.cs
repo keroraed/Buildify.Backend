@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Buildify.APIs.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Seller")]
     public class DashboardController : BaseApiController
     {
         private readonly IDashboardService _dashboardService;
@@ -17,7 +17,7 @@ namespace Buildify.APIs.Controllers
         }
 
         /// <summary>
-        /// Get dashboard statistics (Admin only)
+        /// Get dashboard statistics (Admin and Seller only)
         /// </summary>
         /// <returns>Dashboard statistics including orders, revenue, products, users, and recent activity</returns>
         [HttpGet("stats")]

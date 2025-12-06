@@ -56,8 +56,8 @@ namespace Buildify.APIs.Controllers
             if (order == null)
                 return NotFound(new ApiResponse(404, "Order not found"));
 
-            // Verify the order belongs to the user (unless admin)
-            if (order.UserId != userId && !User.IsInRole("Admin"))
+            // Verify the order belongs to the user (unless admin or seller)
+            if (order.UserId != userId && !User.IsInRole("Admin") && !User.IsInRole("Seller"))
                 return Unauthorized(new ApiResponse(401, "You are not authorized to view this order"));
 
             var orderDto = _mapper.Map<OrderDto>(order);
@@ -150,10 +150,10 @@ namespace Buildify.APIs.Controllers
         }
 
         /// <summary>
-        /// Get all orders (Admin only)
+        /// Get all orders (Admin and Seller only)
         /// </summary>
         [HttpGet("admin")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Seller")]
         public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetAllOrders()
         {
             var spec = new OrderWithItemsSpecification();
@@ -163,10 +163,10 @@ namespace Buildify.APIs.Controllers
         }
 
         /// <summary>
-        /// Update order status (Admin only)
+        /// Update order status (Admin and Seller only)
         /// </summary>
         [HttpPut("{id}/status")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Seller")]
         public async Task<ActionResult<OrderDto>> UpdateOrderStatus(int id, UpdateOrderStatusDto updateStatusDto)
         {
             var order = await _unitOfWork.Repository<Order>().GetByIdAsync(id);
