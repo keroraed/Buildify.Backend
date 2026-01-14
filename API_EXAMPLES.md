@@ -60,6 +60,7 @@ The Buildify platform implements a three-tier role system:
     "categoryId": 1,
     "categoryName": "Power Tools",
     "imageUrl": "/images/products/drill.jpg",
+    "sellerId": "xyz789-abc123-def456",
     "createdDate": "2024-12-01T10:00:00Z"
   },
   {
@@ -71,6 +72,7 @@ The Buildify platform implements a three-tier role system:
     "categoryId": 2,
     "categoryName": "Hand Tools",
     "imageUrl": "/images/products/hammer.jpg",
+    "sellerId": "xyz789-abc123-def456",
     "createdDate": "2024-12-01T10:15:00Z"
   }
 ]
@@ -96,6 +98,7 @@ The Buildify platform implements a three-tier role system:
   "categoryId": 1,
   "categoryName": "Power Tools",
   "imageUrl": "/images/products/drill.jpg",
+  "sellerId": "xyz789-abc123-def456",
   "createdDate": "2024-12-01T10:00:00Z"
 }
 ```
@@ -155,10 +158,59 @@ The Buildify platform implements a three-tier role system:
 
 ---
 
-### 4. Create Product (Admin/Seller Only)
+### 4. Get My Products (Seller/Admin Only)
+**GET** `/api/products/my-products`
+
+**Authorization:** Bearer Token (Seller or Admin role required)
+
+**Description:** Returns all products created by the authenticated seller.
+
+**Response (200 OK):**
+```json
+[
+  {
+    "id": 15,
+    "name": "Cordless Impact Driver",
+    "description": "20V MAX XR brushless impact driver",
+    "price": 149.99,
+    "stock": 25,
+    "categoryId": 1,
+    "categoryName": "Power Tools",
+    "imageUrl": "/images/products/impact-driver.jpg",
+    "sellerId": "abc123-def456-ghi789",
+    "createdDate": "2024-12-05T14:30:00Z"
+  },
+  {
+    "id": 18,
+    "name": "Hammer Drill",
+    "description": "Professional grade hammer drill",
+    "price": 199.99,
+    "stock": 15,
+    "categoryId": 1,
+    "categoryName": "Power Tools",
+    "imageUrl": "/images/products/hammer-drill.jpg",
+    "sellerId": "abc123-def456-ghi789",
+    "createdDate": "2024-12-06T09:15:00Z"
+  }
+]
+```
+
+**Error Response (401):**
+```json
+{
+  "statusCode": 401,
+  "message": "User not authenticated"
+}
+```
+
+---
+
+### 5. Create Product (Admin/Seller Only)
 **POST** `/api/products`
 
 **Authorization:** Bearer Token (Admin or Seller role required)
+
+**Note:** The `sellerId` is automatically set from the authenticated user's ID.
 
 **Request Body:**
 ```json
@@ -183,6 +235,7 @@ The Buildify platform implements a three-tier role system:
   "categoryId": 1,
   "categoryName": "Power Tools",
   "imageUrl": "/images/products/impact-driver.jpg",
+  "sellerId": "abc123-def456-ghi789",
   "createdDate": "2024-12-05T14:30:00Z"
 }
 ```
@@ -203,6 +256,8 @@ The Buildify platform implements a three-tier role system:
 **Example:** `/api/products/15`
 
 **Authorization:** Bearer Token (Admin or Seller role required)
+
+**Note:** The `sellerId` cannot be changed and remains with the original creator.
 
 **Request Body:**
 ```json
@@ -227,6 +282,7 @@ The Buildify platform implements a three-tier role system:
   "categoryId": 1,
   "categoryName": "Power Tools",
   "imageUrl": "/images/products/impact-driver-pro.jpg",
+  "sellerId": "abc123-def456-ghi789",
   "createdDate": "2024-12-05T14:30:00Z"
 }
 ```

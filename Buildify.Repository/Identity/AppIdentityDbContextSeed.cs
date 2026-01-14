@@ -23,12 +23,6 @@ public class AppIdentityDbContextSeed
             await roleManager.CreateAsync(new IdentityRole("Buyer"));
         }
 
-        // Keep legacy "User" role for backward compatibility
-        if (!await roleManager.RoleExistsAsync("User"))
-        {
-            await roleManager.CreateAsync(new IdentityRole("User"));
-        }
-
         // Seed Admin User
         if (await userManager.FindByEmailAsync("admin@example.com") == null)
         {

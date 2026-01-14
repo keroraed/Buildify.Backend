@@ -156,7 +156,8 @@ public class AccountController : BaseApiController
         {
             DisplayName = user.DisplayName,
             Email = user.Email,
-            Token = _tokenService.CreateToken(user, roles)
+            Token = _tokenService.CreateToken(user, roles),
+            Roles = roles.ToList()
         });
     }
 
@@ -245,7 +246,8 @@ public class AccountController : BaseApiController
         {
             DisplayName = user.DisplayName,
             Email = user.Email,
-            Token = _tokenService.CreateToken(user, roles)
+            Token = _tokenService.CreateToken(user, roles),
+            Roles = roles.ToList()
         });
     }
 
@@ -268,7 +270,8 @@ public class AccountController : BaseApiController
         {
             DisplayName = user.DisplayName,
             Email = user.Email,
-            Token = _tokenService.CreateToken(user, roles)
+            Token = _tokenService.CreateToken(user, roles),
+            Roles = roles.ToList()
         });
     }
 

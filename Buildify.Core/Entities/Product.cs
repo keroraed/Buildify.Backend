@@ -27,6 +27,10 @@ namespace Buildify.Core.Entities
         [MaxLength(500)]
         public string? ImageUrl { get; set; }
 
+        [Required]
+        [MaxLength(450)]
+        public string SellerId { get; set; } = string.Empty;
+
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         // Navigation property

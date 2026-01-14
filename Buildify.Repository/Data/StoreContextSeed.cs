@@ -82,7 +82,8 @@ public class StoreContextSeed
                     Price = 180.00m,
                     Stock = 1000,
                     CategoryId = cat1,
-                    ImageUrl = "/images/products/cement.jpg"
+                    ImageUrl = "/images/products/cement.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -91,7 +92,8 @@ public class StoreContextSeed
                     Price = 1200.00m,
                     Stock = 5000,
                     CategoryId = cat1,
-                    ImageUrl = "/images/products/red-brick.jpg"
+                    ImageUrl = "/images/products/red-brick.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -100,7 +102,8 @@ public class StoreContextSeed
                     Price = 28000.00m,
                     Stock = 50,
                     CategoryId = cat1,
-                    ImageUrl = "/images/products/steel-rebar.jpg"
+                    ImageUrl = "/images/products/steel-rebar.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -109,7 +112,8 @@ public class StoreContextSeed
                     Price = 350.00m,
                     Stock = 200,
                     CategoryId = cat1,
-                    ImageUrl = "/images/products/sand.jpg"
+                    ImageUrl = "/images/products/sand.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -118,7 +122,8 @@ public class StoreContextSeed
                     Price = 400.00m,
                     Stock = 150,
                     CategoryId = cat1,
-                    ImageUrl = "/images/products/gravel.jpg"
+                    ImageUrl = "/images/products/gravel.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
 
                 // الدهانات والديكورات
@@ -129,7 +134,8 @@ public class StoreContextSeed
                     Price = 950.00m,
                     Stock = 300,
                     CategoryId = cat2,
-                    ImageUrl = "/images/products/interior-paint.jpg"
+                    ImageUrl = "/images/products/interior-paint.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -138,7 +144,8 @@ public class StoreContextSeed
                     Price = 1200.00m,
                     Stock = 200,
                     CategoryId = cat2,
-                    ImageUrl = "/images/products/exterior-paint.jpg"
+                    ImageUrl = "/images/products/exterior-paint.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -147,7 +154,8 @@ public class StoreContextSeed
                     Price = 320.00m,
                     Stock = 400,
                     CategoryId = cat2,
-                    ImageUrl = "/images/products/wall-putty.jpg"
+                    ImageUrl = "/images/products/wall-putty.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -156,7 +164,8 @@ public class StoreContextSeed
                     Price = 180.00m,
                     Stock = 500,
                     CategoryId = cat2,
-                    ImageUrl = "/images/products/gypsum-board.jpg"
+                    ImageUrl = "/images/products/gypsum-board.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
 
                 // السباكة والصحي
@@ -167,7 +176,8 @@ public class StoreContextSeed
                     Price = 95.00m,
                     Stock = 600,
                     CategoryId = cat3,
-                    ImageUrl = "/images/products/pvc-pipe.jpg"
+                    ImageUrl = "/images/products/pvc-pipe.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -176,7 +186,8 @@ public class StoreContextSeed
                     Price = 450.00m,
                     Stock = 150,
                     CategoryId = cat3,
-                    ImageUrl = "/images/products/faucet.jpg"
+                    ImageUrl = "/images/products/faucet.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -185,7 +196,8 @@ public class StoreContextSeed
                     Price = 850.00m,
                     Stock = 80,
                     CategoryId = cat3,
-                    ImageUrl = "/images/products/sink.jpg"
+                    ImageUrl = "/images/products/sink.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -194,7 +206,8 @@ public class StoreContextSeed
                     Price = 1200.00m,
                     Stock = 60,
                     CategoryId = cat3,
-                    ImageUrl = "/images/products/toilet.jpg"
+                    ImageUrl = "/images/products/toilet.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
 
                 // الكهرباء والإنارة
@@ -205,7 +218,8 @@ public class StoreContextSeed
                     Price = 650.00m,
                     Stock = 200,
                     CategoryId = cat4,
-                    ImageUrl = "/images/products/electric-cable.jpg"
+                    ImageUrl = "/images/products/electric-cable.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -214,7 +228,8 @@ public class StoreContextSeed
                     Price = 35.00m,
                     Stock = 500,
                     CategoryId = cat4,
-                    ImageUrl = "/images/products/light-switch.jpg"
+                    ImageUrl = "/images/products/light-switch.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -223,7 +238,8 @@ public class StoreContextSeed
                     Price = 45.00m,
                     Stock = 800,
                     CategoryId = cat4,
-                    ImageUrl = "/images/products/led-bulb.jpg"
+                    ImageUrl = "/images/products/led-bulb.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -232,7 +248,8 @@ public class StoreContextSeed
                     Price = 850.00m,
                     Stock = 100,
                     CategoryId = cat4,
-                    ImageUrl = "/images/products/electrical-panel.jpg"
+                    ImageUrl = "/images/products/electrical-panel.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
 
                 // الأخشاب والأبواب
@@ -243,7 +260,8 @@ public class StoreContextSeed
                     Price = 3500.00m,
                     Stock = 40,
                     CategoryId = cat5,
-                    ImageUrl = "/images/products/wood-door.jpg"
+                    ImageUrl = "/images/products/wood-door.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -252,7 +270,8 @@ public class StoreContextSeed
                     Price = 180.00m,
                     Stock = 300,
                     CategoryId = cat5,
-                    ImageUrl = "/images/products/wood-plank.jpg"
+                    ImageUrl = "/images/products/wood-plank.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -261,7 +280,8 @@ public class StoreContextSeed
                     Price = 280.00m,
                     Stock = 500,
                     CategoryId = cat5,
-                    ImageUrl = "/images/products/parquet.jpg"
+                    ImageUrl = "/images/products/parquet.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
 
                 // السيراميك والبورسلين
@@ -272,7 +292,8 @@ public class StoreContextSeed
                     Price = 120.00m,
                     Stock = 1000,
                     CategoryId = cat6,
-                    ImageUrl = "/images/products/floor-ceramic.jpg"
+                    ImageUrl = "/images/products/floor-ceramic.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -281,7 +302,8 @@ public class StoreContextSeed
                     Price = 95.00m,
                     Stock = 800,
                     CategoryId = cat6,
-                    ImageUrl = "/images/products/wall-ceramic.jpg"
+                    ImageUrl = "/images/products/wall-ceramic.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -290,7 +312,8 @@ public class StoreContextSeed
                     Price = 250.00m,
                     Stock = 600,
                     CategoryId = cat6,
-                    ImageUrl = "/images/products/porcelain.jpg"
+                    ImageUrl = "/images/products/porcelain.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -299,7 +322,8 @@ public class StoreContextSeed
                     Price = 450.00m,
                     Stock = 200,
                     CategoryId = cat6,
-                    ImageUrl = "/images/products/marble.jpg"
+                    ImageUrl = "/images/products/marble.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
 
                 // الأدوات والمعدات
@@ -310,7 +334,8 @@ public class StoreContextSeed
                     Price = 850.00m,
                     Stock = 50,
                     CategoryId = cat7,
-                    ImageUrl = "/images/products/drill.jpg"
+                    ImageUrl = "/images/products/drill.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -319,7 +344,8 @@ public class StoreContextSeed
                     Price = 1200.00m,
                     Stock = 30,
                     CategoryId = cat7,
-                    ImageUrl = "/images/products/saw.jpg"
+                    ImageUrl = "/images/products/saw.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -328,7 +354,8 @@ public class StoreContextSeed
                     Price = 85.00m,
                     Stock = 200,
                     CategoryId = cat7,
-                    ImageUrl = "/images/products/hammer.jpg"
+                    ImageUrl = "/images/products/hammer.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -337,7 +364,8 @@ public class StoreContextSeed
                     Price = 35.00m,
                     Stock = 300,
                     CategoryId = cat7,
-                    ImageUrl = "/images/products/tape-measure.jpg"
+                    ImageUrl = "/images/products/tape-measure.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
 
                 // العزل والمواد الكيماوية
@@ -348,7 +376,8 @@ public class StoreContextSeed
                     Price = 120.00m,
                     Stock = 400,
                     CategoryId = cat8,
-                    ImageUrl = "/images/products/thermal-insulation.jpg"
+                    ImageUrl = "/images/products/thermal-insulation.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -357,7 +386,8 @@ public class StoreContextSeed
                     Price = 450.00m,
                     Stock = 150,
                     CategoryId = cat8,
-                    ImageUrl = "/images/products/waterproofing.jpg"
+                    ImageUrl = "/images/products/waterproofing.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -366,7 +396,8 @@ public class StoreContextSeed
                     Price = 180.00m,
                     Stock = 300,
                     CategoryId = cat8,
-                    ImageUrl = "/images/products/tile-adhesive.jpg"
+                    ImageUrl = "/images/products/tile-adhesive.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 },
                 new Product
                 {
@@ -375,7 +406,8 @@ public class StoreContextSeed
                     Price = 25.00m,
                     Stock = 500,
                     CategoryId = cat8,
-                    ImageUrl = "/images/products/silicone.jpg"
+                    ImageUrl = "/images/products/silicone.jpg",
+                    SellerId = "70c96c1c-4ae6-4dbc-a160-fc60445415af"
                 }
             };
 

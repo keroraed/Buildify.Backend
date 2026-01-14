@@ -22,8 +22,10 @@ public class MappingProfiles : Profile
         // Product mappings
         CreateMap<Product, ProductDto>()
             .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
-        CreateMap<CreateProductDto, Product>();
-        CreateMap<UpdateProductDto, Product>();
+        CreateMap<CreateProductDto, Product>()
+            .ForMember(dest => dest.SellerId, opt => opt.Ignore()); // Set manually in controller
+        CreateMap<UpdateProductDto, Product>()
+            .ForMember(dest => dest.SellerId, opt => opt.Ignore()); // Don't update seller
 
         // Cart mappings
         CreateMap<Cart, CartDto>();

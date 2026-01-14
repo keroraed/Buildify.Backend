@@ -157,7 +157,7 @@ dotnet run
 
 The application will:
 - Automatically apply migrations
-- Seed default roles (Admin, Seller, Buyer, User)
+- Seed default roles (Admin, Seller, Buyer)
 - Seed admin user (admin@example.com / Admin@123) with verified email
 - Start listening on https://localhost:7101 and http://localhost:7100
 

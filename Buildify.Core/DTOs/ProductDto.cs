@@ -10,6 +10,7 @@ namespace Buildify.Core.DTOs
         public int CategoryId { get; set; }
         public string? CategoryName { get; set; }
         public string? ImageUrl { get; set; }
+        public string SellerId { get; set; } = string.Empty;
         public DateTime CreatedDate { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using Buildify.Core.Repositories;
 using Buildify.Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Buildify.APIs.Controllers
 {
@@ -66,19 +67,55 @@ namespace Buildify.APIs.Controllers
         }
 
         /// <summary>
+        /// Get products for the authenticated seller
+        /// </summary>
+        [HttpGet("my-products")]
+        [Authorize(Roles = "Seller,Admin")]
+        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetMyProducts()
+        {
+            var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(sellerId))
+                return Unauthorized(new ApiResponse(401, "User not authenticated"));
+
+            var spec = new ProductsBySellerSpecification(sellerId);
+            var products = await _unitOfWork.Repository<Product>().ListAsync(spec);
+            var productsDto = _mapper.Map<IReadOnlyList<ProductDto>>(products);
+            return Ok(productsDto);
+        }
+
+        /// <summary>
         /// Create a new product (Admin and Seller only)
         /// </summary>
         [HttpPost]
         [Authorize(Roles = "Admin,Seller")]
-        public async Task<ActionResult<ProductDto>> CreateProduct(CreateProductDto createProductDto)
+        public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] CreateProductDto createProductDto)
         {
             // Check if category exists
             var category = await _unitOfWork.Repository<Category>().GetByIdAsync(createProductDto.CategoryId);
             if (category == null)
                 return BadRequest(new ApiResponse(400, "Invalid category ID"));
 
+            var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(sellerId))
+                return Unauthorized(new ApiResponse(401, "User not authenticated"));
+
             var product = _mapper.Map<Product>(createProductDto);
+            product.SellerId = sellerId;
             product.CreatedDate = DateTime.UtcNow;
+
+            // Handle image upload - file upload takes priority over URL
+            if (createProductDto.Image != null)
+            {
+                var imageUrl = await SaveImageAsync(createProductDto.Image);
+                if (imageUrl == null)
+                    return BadRequest(new ApiResponse(400, "Failed to save image"));
+                
+                product.ImageUrl = imageUrl;
+            }
+            else if (!string.IsNullOrEmpty(createProductDto.ImageUrl))
+            {
+                product.ImageUrl = createProductDto.ImageUrl;
+            }
 
             _unitOfWork.Repository<Product>().Add(product);
             var result = await _unitOfWork.Complete();
@@ -99,7 +136,7 @@ namespace Buildify.APIs.Controllers
         /// </summary>
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin,Seller")]
-        public async Task<ActionResult<ProductDto>> UpdateProduct(int id, UpdateProductDto updateProductDto)
+        public async Task<ActionResult<ProductDto>> UpdateProduct(int id, [FromForm] UpdateProductDto updateProductDto)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
             if (product == null)
@@ -109,6 +146,27 @@ namespace Buildify.APIs.Controllers
             var category = await _unitOfWork.Repository<Category>().GetByIdAsync(updateProductDto.CategoryId);
             if (category == null)
                 return BadRequest(new ApiResponse(400, "Invalid category ID"));
+
+            // Handle image upload if provided - file upload takes priority
+            if (updateProductDto.Image != null)
+            {
+                // Delete old image if exists
+                if (!string.IsNullOrEmpty(product.ImageUrl))
+                {
+                    DeleteImage(product.ImageUrl);
+                }
+
+                var imageUrl = await SaveImageAsync(updateProductDto.Image);
+                if (imageUrl == null)
+                    return BadRequest(new ApiResponse(400, "Failed to save image"));
+                
+                product.ImageUrl = imageUrl;
+            }
+            else if (!string.IsNullOrEmpty(updateProductDto.ImageUrl))
+            {
+                // Use provided URL if no file upload
+                product.ImageUrl = updateProductDto.ImageUrl;
+            }
 
             // Update product properties
             _mapper.Map(updateProductDto, product);
@@ -145,6 +203,71 @@ namespace Buildify.APIs.Controllers
                 return BadRequest(new ApiResponse(400, "Failed to delete product"));
 
             return Ok(new ApiResponse(200, "Product deleted successfully"));
+        }
+
+        /// <summary>
+        /// Helper method to save uploaded image
+        /// </summary>
+        private async Task<string?> SaveImageAsync(IFormFile image)
+        {
+            try
+            {
+                // Validate file
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                    return null;
+
+                // Limit file size to 5MB
+                if (image.Length > 5 * 1024 * 1024)
+                    return null;
+
+                // Generate unique filename
+                var fileName = $"{Guid.NewGuid()}{extension}";
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products");
+
+                // Create directory if it doesn't exist
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                // Save file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                // Return relative URL
+                return $"/images/products/{fileName}";
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Helper method to delete image
+        /// </summary>
+        private void DeleteImage(string imageUrl)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(imageUrl))
+                    return;
+
+                var fileName = Path.GetFileName(imageUrl);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products", fileName);
+
+                if (System.IO.File.Exists(filePath))
+                    System.IO.File.Delete(filePath);
+            }
+            catch
+            {
+                // Log error if needed, but don't fail the operation
+            }
         }
     }
 }

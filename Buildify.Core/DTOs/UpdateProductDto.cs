@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Buildify.Core.DTOs
 {
@@ -22,6 +23,8 @@ namespace Buildify.Core.DTOs
         [Required(ErrorMessage = "Category is required")]
         public int CategoryId { get; set; }
 
+        public IFormFile? Image { get; set; }
+        
         [MaxLength(500, ErrorMessage = "Image URL cannot exceed 500 characters")]
         public string? ImageUrl { get; set; }
     }
