@@ -47,7 +47,14 @@ public class AccountController : BaseApiController
     [HttpPost("register")]
     public async Task<ActionResult<UserDTO>> Register(RegisterDTO registerDto)
     {
-        if (await _userManager.FindByEmailAsync(registerDto.Email) != null)
+        // Check for duplicate phone number
+        if (await _userManager.Users.AnyAsync(u => u.PhoneNumber == registerDto.PhoneNumber))
+        {
+            return BadRequest(new ApiResponse(400, "Phone number is already in use"));
+        }
+
+        // Check for duplicate email only if provided
+        if (!string.IsNullOrEmpty(registerDto.Email) && await _userManager.FindByEmailAsync(registerDto.Email) != null)
         {
             return BadRequest(new ApiResponse(400, "Email address is already in use"));
         }
@@ -56,10 +63,10 @@ public class AccountController : BaseApiController
         {
             DisplayName = registerDto.DisplayName,
             Email = registerDto.Email,
-            UserName = registerDto.Email,
+            UserName = registerDto.PhoneNumber,
             PhoneNumber = registerDto.PhoneNumber,
             DateCreated = DateTime.UtcNow,
-            EmailConfirmed = false // Email not confirmed yet
+            EmailConfirmed = true
         };
 
         var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -77,26 +84,7 @@ public class AccountController : BaseApiController
 
         await _userManager.AddToRoleAsync(user, roleToAssign);
 
-        // Generate and send email verification OTP
-        await _otpRepository.InvalidateAllOtpsByEmailAsync(registerDto.Email, OtpPurpose.EmailVerification);
-        
-        var otpCode = _otpService.GenerateOtp();
-        var hashedOtp = _otpService.HashOtp(otpCode);
-
-        var otp = new Otp
-        {
-            Email = registerDto.Email,
-            Code = hashedOtp,
-            ExpirationDate = DateTime.UtcNow.AddMinutes(10),
-            IsUsed = false,
-            FailedAttempts = 0,
-            Purpose = OtpPurpose.EmailVerification
-        };
-
-        await _otpRepository.AddOtpAsync(otp);
-        await _emailService.SendEmailVerificationOtpAsync(registerDto.Email, otpCode, registerDto.DisplayName);
-
-        return Ok(new ApiResponse(200, "Registration successful. Please check your email to verify your account."));
+        return Ok(new ApiResponse(200, "Registration successful."));
     }
 
     [HttpPost("verify-email")]
@@ -216,24 +204,18 @@ public class AccountController : BaseApiController
     [HttpPost("login")]
     public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDto)
     {
-        var user = await _userManager.FindByEmailAsync(loginDto.Email);
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == loginDto.PhoneNumber);
 
         if (user == null)
         {
-            return Unauthorized(new ApiResponse(401, "Invalid email or password"));
-        }
-
-        // Check if email is confirmed
-        if (!user.EmailConfirmed)
-        {
-            return Unauthorized(new ApiResponse(401, "Please verify your email address before logging in"));
+            return Unauthorized(new ApiResponse(401, "Invalid phone number or password"));
         }
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
         if (!result.Succeeded)
         {
-            return Unauthorized(new ApiResponse(401, "Invalid email or password"));
+            return Unauthorized(new ApiResponse(401, "Invalid phone number or password"));
         }
 
         // Update last login date
