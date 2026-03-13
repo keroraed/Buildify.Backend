@@ -29,14 +29,14 @@
             <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
 
             <div class="mb-3">
-                <label asp-for="Input.Email" class="form-label">
-                    <i class="bi bi-envelope"></i> Email Address
+                <label asp-for="Input.PhoneNumber" class="form-label">
+                    <i class="bi bi-telephone"></i> Phone Number
                 </label>
-                <input asp-for="Input.Email" 
-                       class="form-control form-control-lg" 
-                       placeholder="admin@example.com"
+                <input asp-for="Input.PhoneNumber"
+                       class="form-control form-control-lg"
+                       placeholder="+1234567890"
                        autofocus />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
@@ -80,7 +80,7 @@
             </p>
             <div class="credential-box">
                 <small>
-                    <strong>Email:</strong> admin@example.com<br>
+                    <strong>Phone:</strong> your admin phone number<br>
                     <strong>Password:</strong> Admin@123
                 </small>
             </div>

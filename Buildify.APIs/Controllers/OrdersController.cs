@@ -34,6 +34,20 @@ namespace Buildify.APIs.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized(new ApiResponse(401, "User not authenticated"));
 
+            var isSeller = User.IsInRole("Seller");
+
+            if (isSeller)
+            {
+                var sellerSpec = new OrdersBySellerSpecification(userId);
+                var sellerOrders = await _unitOfWork.Repository<Order>().ListAsync(sellerSpec);
+
+                var sellerOrdersDto = sellerOrders
+                    .Select(order => MapOrderForSeller(order, userId))
+                    .ToList();
+
+                return Ok(sellerOrdersDto);
+            }
+
             var spec = new OrdersByUserSpecification(userId);
             var orders = await _unitOfWork.Repository<Order>().ListAsync(spec);
             var ordersDto = _mapper.Map<IReadOnlyList<OrderDto>>(orders);
@@ -50,6 +64,9 @@ namespace Buildify.APIs.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized(new ApiResponse(401, "User not authenticated"));
 
+            var isAdmin = User.IsInRole("Admin");
+            var isSeller = User.IsInRole("Seller");
+
             var spec = new OrderWithItemsSpecification(id);
             var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
 
@@ -57,8 +74,21 @@ namespace Buildify.APIs.Controllers
                 return NotFound(new ApiResponse(404, "Order not found"));
 
             // Verify the order belongs to the user (unless admin or seller)
-            if (order.UserId != userId && !User.IsInRole("Admin") && !User.IsInRole("Seller"))
+            if (order.UserId != userId && !isAdmin && !isSeller)
                 return Unauthorized(new ApiResponse(401, "You are not authorized to view this order"));
+
+            if (isSeller && !isAdmin)
+            {
+                var sellerItems = order.OrderItems
+                    .Where(oi => oi.Product.SellerId == userId)
+                    .ToList();
+
+                if (!sellerItems.Any())
+                    return Unauthorized(new ApiResponse(401, "You are not authorized to view this order"));
+
+                var sellerOrderDto = MapOrderForSeller(order, userId);
+                return Ok(sellerOrderDto);
+            }
 
             var orderDto = _mapper.Map<OrderDto>(order);
             return Ok(orderDto);
@@ -189,6 +219,19 @@ namespace Buildify.APIs.Controllers
             var orderDto = _mapper.Map<OrderDto>(updatedOrder);
 
             return Ok(orderDto);
+        }
+
+        private OrderDto MapOrderForSeller(Order order, string sellerId)
+        {
+            var sellerItems = order.OrderItems
+                .Where(oi => oi.Product.SellerId == sellerId)
+                .ToList();
+
+            var orderDto = _mapper.Map<OrderDto>(order);
+            orderDto.OrderItems = _mapper.Map<List<OrderItemDto>>(sellerItems);
+            orderDto.TotalPrice = sellerItems.Sum(item => item.Price * item.Quantity);
+
+            return orderDto;
         }
     }
 }

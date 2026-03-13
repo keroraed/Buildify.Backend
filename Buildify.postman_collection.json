@@ -1,0 +1,1329 @@
+{
+  "info": {
+    "name": "Buildify API",
+    "description": "Complete REST API collection for the Buildify e-commerce platform.\n\n## Setup\n1. Import this file into Postman — no separate environment needed.\n2. Edit the `baseUrl` collection variable if your server runs on a different port.\n3. Call **Login** — the `token` variable is auto-saved by the test script.\n4. All protected endpoints inherit Bearer auth from the collection-level `{{token}}`.\n\n## Roles\n- **Admin** – full access\n- **Seller** – manage own products, view orders\n- **Buyer** – shop, cart, checkout (default role)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "buildify-api-collection-v1"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:7101",
+      "type": "string",
+      "description": "Base API server URL. Change to your deployment URL as needed."
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string",
+      "description": "JWT Bearer token. Auto-populated by the Login request test script."
+    },
+    {
+      "key": "resetToken",
+      "value": "",
+      "type": "string",
+      "description": "Short-lived reset token (5 min validity). Auto-populated by the Verify OTP request test script."
+    }
+  ],
+  "item": [
+    {
+      "name": "Account",
+      "description": "Authentication, registration, profile management, and address book endpoints.",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"+1234567890\",\n  \"password\": \"Pass123\",\n  \"role\": \"Buyer\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "account", "register"]
+            },
+            "description": "Register a new user account.\n\n**Roles:** `Buyer` (default) or `Seller`\n\n- Phone number is used as the username/login credential.\n- Email is optional but required for OTP-based verification and password reset.\n- After registration, check your email for a verification OTP."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"statusCode\": 200,\n  \"message\": \"Registration successful. Please verify your email.\"\n}"
+            },
+            {
+              "name": "400 Phone Already In Use",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Phone number already in use.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const json = pm.response.json();",
+                  "    if (json.token) {",
+                  "        pm.collectionVariables.set('token', json.token);",
+                  "        console.log('Token saved to collection variable.');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"+1234567890\",\n  \"password\": \"Pass123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "account", "login"]
+            },
+            "description": "Authenticate with phone number and password.\n\n**Auto-saves token:** The test script automatically saves the returned JWT to the `{{token}}` environment variable."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"displayName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"roles\": [\"Buyer\"]\n}"
+            },
+            {
+              "name": "401 Unauthorized",
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"statusCode\": 401,\n  \"message\": \"Unauthorized\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/GetCurrentUser",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "account", "GetCurrentUser"]
+            },
+            "description": "Returns the profile and a fresh JWT for the currently authenticated user.\n\n**Auth:** Bearer token required."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"displayName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"roles\": [\"Buyer\"]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "account", "logout"]
+            },
+            "description": "Logs out the currently authenticated user.\n\n**Auth:** Bearer token required."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"statusCode\": 200,\n  \"message\": \"Logged out successfully.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Raw Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/token",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "account", "token"]
+            },
+            "description": "Returns the raw JWT string for the authenticated user.\n\n**Auth:** Bearer token required."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [{ "key": "Content-Type", "value": "text/plain" }],
+              "body": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          ]
+        },
+        {
+          "name": "Check Email Exists",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/account/emailexists?email=john.doe@example.com",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "account", "emailexists"],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "john.doe@example.com",
+                  "description": "Email address to check"
+                }
+              ]
+            },
+            "description": "Check whether an email address is already registered. Returns a boolean.\n\n**Auth:** None (public)."
+          },
+          "response": [
+            {
+              "name": "200 Exists",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "true"
+            },
+            {
+              "name": "200 Not Exists",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "false"
+            }
+          ]
+        },
+        {
+          "name": "Email Verification",
+          "description": "Endpoints related to verifying a user's email address.",
+          "item": [
+            {
+              "name": "Verify Email (OTP)",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"otpCode\": \"123456\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/verify-email",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "account", "verify-email"]
+                },
+                "description": "Submit the OTP sent to the user's email after registration to confirm ownership.\n\nOn success, returns a `UserDTO` with a JWT token (user is now logged in)."
+              },
+              "response": [
+                {
+                  "name": "200 Success",
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"displayName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"roles\": [\"Buyer\"]\n}"
+                },
+                {
+                  "name": "400 Invalid OTP",
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Invalid or expired OTP.\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Resend Verification OTP",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"john.doe@example.com\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/resend-verification-otp",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "account", "resend-verification-otp"]
+                },
+                "description": "Resend the email verification OTP.\n\n- Always returns `200` (privacy – does not reveal if email exists).\n- Returns `400` if the email is already verified or if called again within the 60-second cooldown."
+              },
+              "response": [
+                {
+                  "name": "200 Success",
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"statusCode\": 200,\n  \"message\": \"Verification OTP sent if account exists.\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Password Reset",
+          "description": "Three-step password reset flow: request OTP → verify OTP → reset password.",
+          "item": [
+            {
+              "name": "1. Forgot Password (Request OTP)",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"john.doe@example.com\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/ForgotPassword",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "account", "ForgotPassword"]
+                },
+                "description": "Initiate a password reset. Sends a one-time OTP to the provided email address.\n\nAlways returns `200` to prevent email enumeration attacks."
+              },
+              "response": [
+                {
+                  "name": "200 OTP Sent",
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"statusCode\": 200,\n  \"message\": \"If the email is registered, a reset OTP has been sent.\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "2. Verify OTP",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    const json = pm.response.json();",
+                      "    if (json.resetToken) {",
+                      "        pm.collectionVariables.set('resetToken', json.resetToken);",
+                      "        console.log('Reset token saved to collection variable.');",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"otpCode\": \"123456\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/VerifyOtp",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "account", "VerifyOtp"]
+                },
+                "description": "Verify the password-reset OTP. On success, returns a short-lived `resetToken` (valid for 5 minutes) required for the next step.\n\n**Auto-saves resetToken** to collection variable `{{resetToken}}`."
+              },
+              "response": [
+                {
+                  "name": "200 Success",
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"OTP verified successfully.\",\n  \"resetToken\": \"abc123-short-lived-token\"\n}"
+                },
+                {
+                  "name": "400 Invalid OTP",
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Invalid or expired OTP.\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "3. Reset Password with Token",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"resetToken\": \"{{resetToken}}\",\n  \"newPassword\": \"NewPass123\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/ResetPasswordWithToken",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "account", "ResetPasswordWithToken"]
+                },
+                "description": "Complete the password reset using the `resetToken` from the previous step. The token is valid for 5 minutes."
+              },
+              "response": [
+                {
+                  "name": "200 Success",
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"statusCode\": 200,\n  \"message\": \"Password reset successfully.\"\n}"
+                },
+                {
+                  "name": "400 Invalid Token",
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Invalid or expired reset token.\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Resend Password Reset OTP",
+              "request": {
+                "auth": { "type": "noauth" },
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"john.doe@example.com\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/ResendOtp",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "account", "ResendOtp"]
+                },
+                "description": "Resend the password-reset OTP.\n\nReturns `400` if called within the 60-second rate-limit cooldown."
+              },
+              "response": [
+                {
+                  "name": "200 Success",
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"statusCode\": 200,\n  \"message\": \"A new OTP has been sent.\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Profile",
+          "description": "View and update the authenticated user's profile.",
+          "item": [
+            {
+              "name": "Get Profile",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/profile",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "account", "profile"]
+                },
+                "description": "Retrieve the current user's profile (display name, email, phone).\n\n**Auth:** Bearer token required."
+              },
+              "response": [
+                {
+                  "name": "200 Success",
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"displayName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"+1234567890\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Update Profile",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"displayName\": \"John Updated\",\n  \"phoneNumber\": \"+1987654321\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/profile",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "account", "profile"]
+                },
+                "description": "Update the current user's display name and phone number.\n\n**Auth:** Bearer token required."
+              },
+              "response": [
+                {
+                  "name": "200 Success",
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"displayName\": \"John Updated\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"+1987654321\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Addresses",
+          "description": "Manage the current user's saved shipping addresses.",
+          "item": [
+            {
+              "name": "Get All Addresses",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/addresses",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "account", "addresses"]
+                },
+                "description": "Retrieve all saved addresses for the authenticated user.\n\n**Auth:** Bearer token required."
+              },
+              "response": [
+                {
+                  "name": "200 Success",
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "[\n  {\n    \"id\": 1,\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"street\": \"123 Main St\",\n    \"city\": \"Springfield\",\n    \"state\": \"IL\",\n    \"zipCode\": \"62701\",\n    \"country\": \"US\"\n  }\n]"
+                }
+              ]
+            },
+            {
+              "name": "Add Address",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"street\": \"123 Main St\",\n  \"city\": \"Springfield\",\n  \"state\": \"IL\",\n  \"zipCode\": \"62701\",\n  \"country\": \"US\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/addresses",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "account", "addresses"]
+                },
+                "description": "Add a new shipping address for the authenticated user.\n\n**Auth:** Bearer token required.\n**Returns:** `201 Created` with the new address object."
+              },
+              "response": [
+                {
+                  "name": "201 Created",
+                  "status": "Created",
+                  "code": 201,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"id\": 2,\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"street\": \"123 Main St\",\n  \"city\": \"Springfield\",\n  \"state\": \"IL\",\n  \"zipCode\": \"62701\",\n  \"country\": \"US\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Update Address",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"street\": \"456 Oak Ave\",\n  \"city\": \"Chicago\",\n  \"state\": \"IL\",\n  \"zipCode\": \"60601\",\n  \"country\": \"US\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/addresses/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "account", "addresses", "1"]
+                },
+                "description": "Update an existing address by its ID.\n\n**Auth:** Bearer token required.\n**Route param:** `id` – the address ID."
+              },
+              "response": [
+                {
+                  "name": "200 Success",
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"id\": 1,\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"street\": \"456 Oak Ave\",\n  \"city\": \"Chicago\",\n  \"state\": \"IL\",\n  \"zipCode\": \"60601\",\n  \"country\": \"US\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Delete Address",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/account/addresses/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "account", "addresses", "1"]
+                },
+                "description": "Delete an address by its ID.\n\n**Auth:** Bearer token required.\n**Route param:** `id` – the address ID."
+              },
+              "response": [
+                {
+                  "name": "200 Success",
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [{ "key": "Content-Type", "value": "application/json" }],
+                  "body": "{\n  \"statusCode\": 200,\n  \"message\": \"Address deleted successfully.\"\n}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "description": "Browse, search, and manage products. Create/update/delete require Admin or Seller role.",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            },
+            "description": "Retrieve a list of all products.\n\n**Auth:** None (public)."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "[\n  {\n    \"id\": 1,\n    \"name\": \"Electric Drill\",\n    \"description\": \"Heavy-duty 20V cordless drill\",\n    \"price\": 89.99,\n    \"stock\": 50,\n    \"categoryId\": 2,\n    \"categoryName\": \"Power Tools\",\n    \"imageUrl\": \"/images/products/drill.jpg\",\n    \"sellerId\": \"seller-user-guid\",\n    \"createdDate\": \"2026-01-15T10:00:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "1"]
+            },
+            "description": "Retrieve a single product by its ID.\n\n**Auth:** None (public).\n**Route param:** `id` – product ID."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Electric Drill\",\n  \"description\": \"Heavy-duty 20V cordless drill\",\n  \"price\": 89.99,\n  \"stock\": 50,\n  \"categoryId\": 2,\n  \"categoryName\": \"Power Tools\",\n  \"imageUrl\": \"/images/products/drill.jpg\",\n  \"sellerId\": \"seller-user-guid\",\n  \"createdDate\": \"2026-01-15T10:00:00Z\"\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"statusCode\": 404,\n  \"message\": \"Not Found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Products by Category",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/category/2",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "category", "2"]
+            },
+            "description": "Retrieve all products belonging to a specific category.\n\n**Auth:** None (public).\n**Route param:** `categoryId` – category ID."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "[\n  {\n    \"id\": 1,\n    \"name\": \"Electric Drill\",\n    \"price\": 89.99,\n    \"stock\": 50,\n    \"categoryId\": 2,\n    \"categoryName\": \"Power Tools\",\n    \"imageUrl\": \"/images/products/drill.jpg\",\n    \"sellerId\": \"seller-user-guid\",\n    \"createdDate\": \"2026-01-15T10:00:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get My Products (Seller)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/my-products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "my-products"]
+            },
+            "description": "Retrieve all products created by the currently authenticated seller (or all products if Admin).\n\n**Auth:** Bearer token required.\n**Roles:** `Seller`, `Admin`."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "[\n  {\n    \"id\": 1,\n    \"name\": \"Electric Drill\",\n    \"price\": 89.99,\n    \"stock\": 50,\n    \"categoryId\": 2,\n    \"categoryName\": \"Power Tools\",\n    \"sellerId\": \"seller-user-guid\",\n    \"createdDate\": \"2026-01-15T10:00:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Electric Drill Pro", "type": "text", "description": "Required. Max 200 chars." },
+                { "key": "description", "value": "Heavy-duty 20V cordless drill with LED", "type": "text", "description": "Optional. Max 1000 chars." },
+                { "key": "price", "value": "99.99", "type": "text", "description": "Required. Min 0.01." },
+                { "key": "stock", "value": "100", "type": "text", "description": "Required. Min 0." },
+                { "key": "categoryId", "value": "2", "type": "text", "description": "Required. Must be a valid category ID." },
+                { "key": "image", "value": "", "type": "file", "description": "Optional file. Accepted: jpg, jpeg, png, gif, webp. Max 5 MB. Takes priority over imageUrl.", "disabled": true },
+                { "key": "imageUrl", "value": "https://example.com/drill.jpg", "type": "text", "description": "Optional fallback URL if no file is uploaded." }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            },
+            "description": "Create a new product listing.\n\n**Auth:** Bearer token required.\n**Roles:** `Admin`, `Seller`.\n**Content-Type:** `multipart/form-data`\n\nThe seller ID is automatically set from the JWT token. Either upload an `image` file or provide an `imageUrl`."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 5,\n  \"name\": \"Electric Drill Pro\",\n  \"description\": \"Heavy-duty 20V cordless drill with LED\",\n  \"price\": 99.99,\n  \"stock\": 100,\n  \"categoryId\": 2,\n  \"categoryName\": \"Power Tools\",\n  \"imageUrl\": \"/images/products/drill-pro.jpg\",\n  \"sellerId\": \"seller-user-guid\",\n  \"createdDate\": \"2026-03-13T08:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Electric Drill Pro V2", "type": "text" },
+                { "key": "description", "value": "Updated description", "type": "text" },
+                { "key": "price", "value": "109.99", "type": "text" },
+                { "key": "stock", "value": "80", "type": "text" },
+                { "key": "categoryId", "value": "2", "type": "text" },
+                { "key": "image", "value": "", "type": "file", "description": "Optional. Uploading a new image replaces the old file on disk.", "disabled": true },
+                { "key": "imageUrl", "value": "", "type": "text", "disabled": true }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "5"]
+            },
+            "description": "Update an existing product.\n\n**Auth:** Bearer token required.\n**Roles:** `Admin`, `Seller`.\n**Content-Type:** `multipart/form-data`\n**Route param:** `id` – product ID.\n\nThe seller ID cannot be changed. Uploading a new image automatically deletes the old one from disk."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 5,\n  \"name\": \"Electric Drill Pro V2\",\n  \"price\": 109.99,\n  \"stock\": 80,\n  \"categoryId\": 2,\n  \"categoryName\": \"Power Tools\",\n  \"sellerId\": \"seller-user-guid\",\n  \"createdDate\": \"2026-03-13T08:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "5"]
+            },
+            "description": "Delete a product by its ID.\n\n**Auth:** Bearer token required.\n**Roles:** `Admin`, `Seller`.\n**Route param:** `id` – product ID."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"statusCode\": 200,\n  \"message\": \"Product deleted successfully.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "description": "Product category management. Read operations are public; write operations require Admin role.",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"]
+            },
+            "description": "Retrieve all product categories.\n\n**Auth:** None (public)."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "[\n  {\n    \"id\": 1,\n    \"name\": \"Hand Tools\",\n    \"description\": \"Manual tools for all trades\"\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Power Tools\",\n    \"description\": \"Electric and battery-powered tools\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories", "1"]
+            },
+            "description": "Retrieve a single category by its ID.\n\n**Auth:** None (public).\n**Route param:** `id` – category ID."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Hand Tools\",\n  \"description\": \"Manual tools for all trades\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Safety Equipment\",\n  \"description\": \"Protective gear and safety accessories\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"]
+            },
+            "description": "Create a new product category.\n\n**Auth:** Bearer token required.\n**Roles:** `Admin` only.\n\nCategory name must be unique (max 100 chars). Description is optional (max 500 chars)."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 3,\n  \"name\": \"Safety Equipment\",\n  \"description\": \"Protective gear and safety accessories\"\n}"
+            },
+            {
+              "name": "400 Duplicate Name",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"A category with this name already exists.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Safety & PPE\",\n  \"description\": \"Personal protective equipment and safety gear\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categories/3",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories", "3"]
+            },
+            "description": "Update a category by its ID.\n\n**Auth:** Bearer token required.\n**Roles:** `Admin` only.\n**Route param:** `id` – category ID."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 3,\n  \"name\": \"Safety & PPE\",\n  \"description\": \"Personal protective equipment and safety gear\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories/3",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories", "3"]
+            },
+            "description": "Delete a category by its ID.\n\n**Auth:** Bearer token required.\n**Roles:** `Admin` only.\n**Route param:** `id` – category ID.\n\nReturns `400` if the category has associated products (cannot delete non-empty categories)."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"statusCode\": 200,\n  \"message\": \"Category deleted successfully.\"\n}"
+            },
+            {
+              "name": "400 Has Products",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Cannot delete a category that has associated products.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "description": "Shopping cart management. All endpoints require authentication.",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cart"]
+            },
+            "description": "Retrieve the current user's shopping cart, including all items with computed totals.\n\n**Auth:** Bearer token required.\n\nReturns an empty cart object if no cart exists yet."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 7,\n  \"userId\": \"buyer-user-guid\",\n  \"createdDate\": \"2026-03-13T07:00:00Z\",\n  \"updatedDate\": \"2026-03-13T08:30:00Z\",\n  \"items\": [\n    {\n      \"id\": 12,\n      \"productId\": 1,\n      \"productName\": \"Electric Drill\",\n      \"productImageUrl\": \"/images/products/drill.jpg\",\n      \"quantity\": 2,\n      \"price\": 89.99,\n      \"subtotal\": 179.98\n    }\n  ],\n  \"totalPrice\": 179.98,\n  \"totalItems\": 2\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add Item to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": 1,\n  \"quantity\": 2\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cart"]
+            },
+            "description": "Add a product to the cart, or increase its quantity if already present.\n\n**Auth:** Bearer token required.\n\nQuantity must be at least 1. Stock availability is validated — cannot exceed available stock. Returns the full updated cart."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 7,\n  \"userId\": \"buyer-user-guid\",\n  \"createdDate\": \"2026-03-13T07:00:00Z\",\n  \"updatedDate\": \"2026-03-13T08:35:00Z\",\n  \"items\": [\n    {\n      \"id\": 12,\n      \"productId\": 1,\n      \"productName\": \"Electric Drill\",\n      \"productImageUrl\": \"/images/products/drill.jpg\",\n      \"quantity\": 2,\n      \"price\": 89.99,\n      \"subtotal\": 179.98\n    }\n  ],\n  \"totalPrice\": 179.98,\n  \"totalItems\": 2\n}"
+            },
+            {
+              "name": "400 Insufficient Stock",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Insufficient stock. Only 1 unit(s) available.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Cart Item Quantity",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 3\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/cart/12",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cart", "12"]
+            },
+            "description": "Update the quantity of a specific cart item.\n\n**Auth:** Bearer token required.\n**Route param:** `itemId` – the cart item ID (not the product ID).\n\nOwnership is validated — users can only modify their own cart items."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 7,\n  \"userId\": \"buyer-user-guid\",\n  \"items\": [\n    {\n      \"id\": 12,\n      \"productId\": 1,\n      \"productName\": \"Electric Drill\",\n      \"quantity\": 3,\n      \"price\": 89.99,\n      \"subtotal\": 269.97\n    }\n  ],\n  \"totalPrice\": 269.97,\n  \"totalItems\": 3\n}"
+            }
+          ]
+        },
+        {
+          "name": "Remove Cart Item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cart/12",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cart", "12"]
+            },
+            "description": "Remove a single item from the cart.\n\n**Auth:** Bearer token required.\n**Route param:** `itemId` – the cart item ID.\n\nOwnership is validated. Returns the updated cart (may be null/empty if last item was removed)."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 7,\n  \"userId\": \"buyer-user-guid\",\n  \"items\": [],\n  \"totalPrice\": 0,\n  \"totalItems\": 0\n}"
+            }
+          ]
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cart"]
+            },
+            "description": "Remove **all** items from the current user's cart.\n\n**Auth:** Bearer token required.\n\nReturns `404` if no cart or already empty."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"statusCode\": 200,\n  \"message\": \"Cart cleared successfully.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "description": "Order placement and management. All endpoints require authentication.",
+      "item": [
+        {
+          "name": "Get My Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders"]
+            },
+            "description": "Retrieve all orders for the currently authenticated user.\n\n**Auth:** Bearer token required."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "[\n  {\n    \"id\": 10,\n    \"userId\": \"buyer-user-guid\",\n    \"orderDate\": \"2026-03-13T09:00:00Z\",\n    \"totalPrice\": 179.98,\n    \"status\": \"Pending\",\n    \"shippingAddress\": {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"street\": \"123 Main St\",\n      \"city\": \"Springfield\",\n      \"state\": \"IL\",\n      \"zipCode\": \"62701\",\n      \"country\": \"US\"\n    },\n    \"orderItems\": [\n      {\n        \"id\": 20,\n        \"productId\": 1,\n        \"productName\": \"Electric Drill\",\n        \"productImageUrl\": \"/images/products/drill.jpg\",\n        \"price\": 89.99,\n        \"quantity\": 2,\n        \"subtotal\": 179.98\n      }\n    ],\n    \"updatedDate\": null\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", "10"]
+            },
+            "description": "Retrieve a specific order by its ID.\n\n**Auth:** Bearer token required.\n**Route param:** `id` – order ID.\n\n**Access rules:**\n- Regular users can only view their own orders.\n- `Admin` and `Seller` roles can view any order.\n\nReturns `401` if a non-admin/seller tries to access another user's order."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 10,\n  \"userId\": \"buyer-user-guid\",\n  \"orderDate\": \"2026-03-13T09:00:00Z\",\n  \"totalPrice\": 179.98,\n  \"status\": \"Pending\",\n  \"shippingAddress\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"street\": \"123 Main St\",\n    \"city\": \"Springfield\",\n    \"state\": \"IL\",\n    \"zipCode\": \"62701\",\n    \"country\": \"US\"\n  },\n  \"orderItems\": [\n    {\n      \"id\": 20,\n      \"productId\": 1,\n      \"productName\": \"Electric Drill\",\n      \"price\": 89.99,\n      \"quantity\": 2,\n      \"subtotal\": 179.98\n    }\n  ],\n  \"updatedDate\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Order (Checkout)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shippingAddress\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"street\": \"123 Main St\",\n    \"city\": \"Springfield\",\n    \"state\": \"IL\",\n    \"zipCode\": \"62701\",\n    \"country\": \"US\"\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders"]
+            },
+            "description": "Place a new order from the current cart contents.\n\n**Auth:** Bearer token required.\n\n**What happens:**\n1. Validates stock availability for all cart items.\n2. Deducts purchased quantities from product stock.\n3. Creates the order with a snapshot of item prices.\n4. Clears the cart on success.\n\nReturns `400` if the cart is empty or any item has insufficient stock."
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 10,\n  \"userId\": \"buyer-user-guid\",\n  \"orderDate\": \"2026-03-13T09:00:00Z\",\n  \"totalPrice\": 179.98,\n  \"status\": \"Pending\",\n  \"shippingAddress\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"street\": \"123 Main St\",\n    \"city\": \"Springfield\",\n    \"state\": \"IL\",\n    \"zipCode\": \"62701\",\n    \"country\": \"US\"\n  },\n  \"orderItems\": [\n    {\n      \"id\": 20,\n      \"productId\": 1,\n      \"productName\": \"Electric Drill\",\n      \"price\": 89.99,\n      \"quantity\": 2,\n      \"subtotal\": 179.98\n    }\n  ],\n  \"updatedDate\": null\n}"
+            },
+            {
+              "name": "400 Cart Empty",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Your cart is empty.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Orders (Admin/Seller)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/admin",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", "admin"]
+            },
+            "description": "Retrieve all orders in the system.\n\n**Auth:** Bearer token required.\n**Roles:** `Admin`, `Seller`."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "[\n  {\n    \"id\": 10,\n    \"userId\": \"buyer-user-guid\",\n    \"orderDate\": \"2026-03-13T09:00:00Z\",\n    \"totalPrice\": 179.98,\n    \"status\": \"Pending\",\n    \"orderItems\": []\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Update Order Status (Admin/Seller)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": 2\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/10/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", "10", "status"]
+            },
+            "description": "Update the status of an order.\n\n**Auth:** Bearer token required.\n**Roles:** `Admin`, `Seller`.\n**Route param:** `id` – order ID.\n\n**OrderStatus enum values:**\n| Value | Name |\n|---|---|\n| `1` | Pending |\n| `2` | Processing |\n| `3` | Shipped |\n| `4` | Delivered |\n| `5` | Cancelled |"
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"id\": 10,\n  \"userId\": \"buyer-user-guid\",\n  \"orderDate\": \"2026-03-13T09:00:00Z\",\n  \"totalPrice\": 179.98,\n  \"status\": \"Processing\",\n  \"updatedDate\": \"2026-03-13T10:00:00Z\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "description": "Admin/Seller dashboard analytics and statistics.",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "stats"]
+            },
+            "description": "Retrieve aggregated platform statistics including revenue, order counts, low-stock alerts, and recent activity.\n\n**Auth:** Bearer token required.\n**Roles:** `Admin`, `Seller`."
+          },
+          "response": [
+            {
+              "name": "200 Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"totalOrders\": 142,\n  \"totalRevenue\": 24899.50,\n  \"totalProducts\": 78,\n  \"totalUsers\": 230,\n  \"recentOrders\": [\n    {\n      \"id\": 142,\n      \"userId\": \"buyer-user-guid\",\n      \"orderDate\": \"2026-03-13T09:00:00Z\",\n      \"totalPrice\": 89.99,\n      \"status\": \"Pending\"\n    }\n  ],\n  \"lowStockProducts\": [\n    {\n      \"id\": 7,\n      \"name\": \"Safety Helmet\",\n      \"stock\": 3,\n      \"categoryName\": \"Safety Equipment\"\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -26,9 +26,9 @@ namespace Buildify.APIs.Areas.Admin.Pages.Account
 
         public class LoginInputModel
         {
-            [Required(ErrorMessage = "Email is required")]
-            [EmailAddress(ErrorMessage = "Invalid email address")]
-            public string Email { get; set; } = string.Empty;
+            [Required(ErrorMessage = "Phone number is required")]
+            [Phone(ErrorMessage = "Invalid phone number")]
+            public string PhoneNumber { get; set; } = string.Empty;
 
             [Required(ErrorMessage = "Password is required")]
             [DataType(DataType.Password)]
@@ -59,7 +59,7 @@ namespace Buildify.APIs.Areas.Admin.Pages.Account
                 // Prepare login request
                 var loginRequest = new
                 {
-                    email = Input.Email,
+                    phoneNumber = Input.PhoneNumber,
                     password = Input.Password
                 };
 
@@ -94,7 +94,7 @@ namespace Buildify.APIs.Areas.Admin.Pages.Account
 
                         Response.Cookies.Append("AuthToken", loginResponse.Token, cookieOptions);
 
-                        _logger.LogInformation("User {Email} logged in successfully", Input.Email);
+                        _logger.LogInformation("User {PhoneNumber} logged in successfully", Input.PhoneNumber);
 
                         // Redirect to return URL or dashboard
                         return LocalRedirect(ReturnUrl);
@@ -118,7 +118,7 @@ namespace Buildify.APIs.Areas.Admin.Pages.Account
                         ErrorMessage = "Invalid email or password";
                     }
 
-                    _logger.LogWarning("Failed login attempt for {Email}", Input.Email);
+                    _logger.LogWarning("Failed login attempt for {PhoneNumber}", Input.PhoneNumber);
                 }
                 else
                 {
@@ -129,7 +129,7 @@ namespace Buildify.APIs.Areas.Admin.Pages.Account
             catch (Exception ex)
             {
                 ErrorMessage = "An unexpected error occurred. Please try again.";
-                _logger.LogError(ex, "Exception during login for {Email}", Input.Email);
+                _logger.LogError(ex, "Exception during login for {PhoneNumber}", Input.PhoneNumber);
             }
 
             return Page();
